@@ -1,0 +1,21 @@
+{
+  "name": "lojaqa-automacao-banca",
+  "version": "1.0.0",
+  "description": "Suíte Playwright + TypeScript (E2E e API) do módulo Checkout: Pagamentos & Criação de Pedido da Loja QA – Banca FAP 2026",
+  "scripts": {
+    "test": "playwright test",
+    "test:e2e": "playwright test tests/e2e/lojaqa-modulo-6.spec.ts --headed",
+    "test:api": "playwright test tests/api/lojaqa-api-6.spec.ts",
+    "test:ext": "playwright test tests/e2e/externo-e2e.spec.ts tests/api/externo-api.spec.ts --headed",
+    "test:ui": "playwright test --ui",
+    "report": "playwright show-report",
+    "typecheck": "tsc --noEmit"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.65.0",
+    "@types/node": "^22.20.5",
+    "dotenv": "^16.6.1",
+    "typescript": "^5.9.3"
+  }
+}
