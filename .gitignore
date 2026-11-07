@@ -147,11 +147,3 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
-
-# --- Playwright / projeto da banca ---
-node_modules/
-.env
-.auth/
-test-results/
-playwright-report/
-blob-report/
