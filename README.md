@@ -1,0 +1,1 @@
+# lojaqa-automacao-banca
