@@ -147,3 +147,12 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# Token do login (gerado pelo tests/setup/auth.setup.ts) — NUNCA vai para o Git
+/.auth/
