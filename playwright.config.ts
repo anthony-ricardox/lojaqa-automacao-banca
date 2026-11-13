@@ -6,6 +6,10 @@
 import { defineConfig, devices } from '@playwright/test';
 import 'dotenv/config'; // lê o .env e coloca os valores em process.env
 
+// Modo evidência: EVIDENCIA=1 no .env grava vídeo, print e trace de TODOS os testes
+// (para anexar no Jira). Com 0 ou ausente, só guarda quando o teste falha.
+const EVIDENCIA = process.env.EVIDENCIA === '1';
+
 export default defineConfig({
   testDir: './tests', // onde o Playwright procura os testes
   timeout: 60_000, // cada teste pode levar até 60 s (a API no Render "acorda" devagar)
@@ -15,9 +19,9 @@ export default defineConfig({
 
   // ===== BLOCO B: o que guardar quando algo falha =====
   use: {
-    trace: 'retain-on-failure', // "filme" passo a passo, só quando falha
-    screenshot: 'only-on-failure', // print da tela, só quando falha
-    video: 'retain-on-failure', // vídeo, só quando falha
+    trace: EVIDENCIA ? 'on' : 'retain-on-failure', // "filme" passo a passo
+    screenshot: EVIDENCIA ? 'on' : 'only-on-failure', // print da tela no fim do teste
+    video: EVIDENCIA ? 'on' : 'retain-on-failure', // vídeo do teste inteiro
     launchOptions: { slowMo: Number(process.env.SLOWMO ?? 0) }, // velocidade do robô
   },
 
