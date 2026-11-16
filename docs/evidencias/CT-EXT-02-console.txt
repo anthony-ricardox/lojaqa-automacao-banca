@@ -1,0 +1,168 @@
+### CT-EXT-02.1 · busca o Rick pelo id (200) e valida o contrato
+Resultado: passou em 173 ms
+
+▶ CT-EXT-02.1 · personagem 1
+  GET https://rickandmortyapi.com/api/character/1
+  STATUS: 200 OK · CONTENT-TYPE: application/json; charset=utf-8
+{
+  "id": 1,
+  "name": "Rick Sanchez",
+  "status": "Alive",
+  "species": "Human",
+  "type": "",
+  "gender": "Male",
+  "origin": {
+    "name": "Earth (C-137)",
+    "url": "https://rickandmortyapi.com/api/location/1"
+  },
+  "location": {
+    "name": "Citadel of Ricks",
+    "url": "https://rickandmortyapi.com/api/location/3"
+  },
+  "image": "https://rickandmortyapi.com/api/character/avatar/1.jpeg",
+  "episode": "[51 episódios]",
+  "url": "https://rickandmortyapi.com/api/character/1",
+  "created": "2017-11-04T18:48:46.250Z"
+}
+
+### CT-EXT-02.2 · filtro por nome e status devolve só Ricks vivos
+Resultado: passou em 150 ms
+
+▶ CT-EXT-02.2 · ?name=rick&status=alive
+  GET https://rickandmortyapi.com/api/character/?name=rick&status=alive
+  STATUS: 200 OK · CONTENT-TYPE: application/json; charset=utf-8
+{
+  "info": {
+    "count": 29,
+    "pages": 2,
+    "next": "https://rickandmortyapi.com/api/character/?page=2&name=rick&status=alive",
+    "prev": null
+  },
+  "results": [
+    "1 · Rick Sanchez (Alive)",
+    "48 · Black Rick (Alive)",
+    "72 · Cool Rick (Alive)",
+    "74 · Cop Rick (Alive)",
+    "78 · Cowboy Rick (Alive)",
+    "220 · Mega Fruit Farmer Rick (Alive)",
+    "265 · Pickle Rick (Alive)",
+    "267 · Plumber Rick (Alive)",
+    "288 · Rick D716-B (Alive)",
+    "289 · Rick D716-C (Alive)",
+    "291 · Rick J-22 (Alive)",
+    "292 · Rick K-22 (Alive)",
+    "328 · Slow Rick (Alive)",
+    "345 · Teacher Rick (Alive)",
+    "381 · Woman Rick (Alive)",
+    "472 · Baby Rick (Alive)",
+    "477 · Hairdresser Rick (Alive)",
+    "478 · Journalist Rick (Alive)",
+    "482 · Secret Service Rick (Alive)",
+    "483 · Steve Jobs Rick (Alive)"
+  ]
+}
+
+### CT-EXT-02.3 · paginação: a página 2 traz os ids 21 a 40
+Resultado: passou em 70 ms
+
+▶ CT-EXT-02.3 · ?page=2
+  GET https://rickandmortyapi.com/api/character/?page=2
+  STATUS: 200 OK · CONTENT-TYPE: application/json; charset=utf-8
+{
+  "info": {
+    "count": 826,
+    "pages": 42,
+    "next": "https://rickandmortyapi.com/api/character/?page=3",
+    "prev": "https://rickandmortyapi.com/api/character/?page=1"
+  },
+  "ids": [
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40
+  ]
+}
+
+### CT-EXT-02.4 · encadeia chamadas: o 1º episódio do Rick é o Pilot
+Resultado: passou em 81 ms
+
+▶ CT-EXT-02.4 · seguindo o link do 1º episódio do Rick
+  GET https://rickandmortyapi.com/api/episode/1
+  STATUS: 200 OK · CONTENT-TYPE: application/json; charset=utf-8
+{
+  "id": 1,
+  "name": "Pilot",
+  "air_date": "December 2, 2013",
+  "episode": "S01E01",
+  "characters": "[19 personagens]",
+  "url": "https://rickandmortyapi.com/api/episode/1",
+  "created": "2017-11-10T12:56:33.798Z"
+}
+
+### CT-EXT-02.5 · vários ids numa chamada devolvem a família Smith
+Resultado: passou em 64 ms
+
+▶ CT-EXT-02.5 · personagens 1,2,3
+  GET https://rickandmortyapi.com/api/character/1,2,3
+  STATUS: 200 OK · CONTENT-TYPE: application/json; charset=utf-8
+[
+  {
+    "id": 1,
+    "name": "Rick Sanchez"
+  },
+  {
+    "id": 2,
+    "name": "Morty Smith"
+  },
+  {
+    "id": 3,
+    "name": "Summer Smith"
+  }
+]
+
+### CT-EXT-02.6 · id inexistente retorna 404
+Resultado: passou em 93 ms
+
+▶ CT-EXT-02.6 · personagem 999999
+  GET https://rickandmortyapi.com/api/character/999999
+  STATUS: 404 Not Found · CONTENT-TYPE: application/json; charset=utf-8
+{
+  "error": "Character not found"
+}
+
+### CT-EXT-02.7 · busca sem resultado retorna 404
+Resultado: passou em 71 ms
+
+▶ CT-EXT-02.7 · ?name=zzzzzz
+  GET https://rickandmortyapi.com/api/character/?name=zzzzzz
+  STATUS: 404 Not Found · CONTENT-TYPE: application/json; charset=utf-8
+{
+  "error": "There is nothing here"
+}
+
+### CT-EXT-02.8 · [achado] id inválido deveria retornar 400
+Resultado: falhou como esperado (achado documentado) em 81 ms
+Motivo: Error: entrada inválida é erro do cliente: 400
+
+▶ CT-EXT-02.8 · personagem "abc"
+  GET https://rickandmortyapi.com/api/character/abc
+  STATUS: 500 Internal Server Error · CONTENT-TYPE: application/json; charset=utf-8
+{
+  "error": "Hey! you must provide an id"
+}

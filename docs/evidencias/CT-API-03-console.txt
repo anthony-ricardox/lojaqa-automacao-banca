@@ -1,0 +1,17 @@
+CT-API-03 · sem itens e endereço retorna 400
+Resultado: passou em 611 ms · execução de 15/11/2026
+
+
+▶ CT-API-03 · POST /api/orders sem itens e sem endereço
+  STATUS: 400 Bad Request
+  CONTENT-TYPE: application/json; charset=utf-8
+{
+  "error": "Itens e endereço de entrega são obrigatórios."
+}
+
+▶ CT-API-03 · POST /api/orders com quantidade 0
+  STATUS: 400 Bad Request
+  CONTENT-TYPE: application/json; charset=utf-8
+{
+  "error": "Produto ou quantidade inválida."
+}

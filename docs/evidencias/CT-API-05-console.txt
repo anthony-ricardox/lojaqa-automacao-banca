@@ -1,0 +1,10 @@
+CT-API-05 · acima do estoque retorna 409
+Resultado: passou em 426 ms · execução de 15/11/2026
+
+
+▶ CT-API-05 · POST /api/orders acima do estoque
+  STATUS: 409 Conflict
+  CONTENT-TYPE: application/json; charset=utf-8
+{
+  "error": "Estoque insuficiente para Teclado Mecânico Aurora RGB."
+}

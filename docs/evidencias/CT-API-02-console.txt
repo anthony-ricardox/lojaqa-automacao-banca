@@ -1,0 +1,27 @@
+CT-API-02 · pedido aparece em GET /api/orders/me
+Resultado: passou em 894 ms · execução de 15/11/2026
+
+
+▶ CT-API-02 · GET /api/orders/me (156 pedidos; abaixo, o do CT-API-01)
+  STATUS: 200 OK
+  CONTENT-TYPE: application/json; charset=utf-8
+{
+  "_id": "6afa25c1a582bad47a36962c",
+  "customerId": "6abe519f384f04df16c614fa",
+  "items": [
+    {
+      "productId": "6aec92bc2fca730ea168656d",
+      "name": "Teclado Mecânico Aurora RGB",
+      "quantity": 1,
+      "unitPrice": 289.9,
+      "sellerId": "6abe51a2384f04df16c614fd",
+      "_id": "6afa25c1a582bad47a36962d"
+    }
+  ],
+  "total": 289.9,
+  "status": "pending",
+  "shippingAddress": "Av. Paulista, 1000 - Bela Vista, São Paulo/SP (CEP: 01310-100)",
+  "createdAt": "2026-11-15T21:36:01.993Z",
+  "updatedAt": "2026-11-15T21:36:01.993Z",
+  "__v": 0
+}

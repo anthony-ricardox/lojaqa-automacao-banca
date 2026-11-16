@@ -1,0 +1,18 @@
+CT-API-04 · [BUG-08] sem token deveria retornar 401
+Resultado: falhou como esperado (bug documentado) em 442 ms · execução de 15/11/2026
+Motivo: Error: sem token: o contrato diz 401 | Error: token inválido: o contrato diz 403
+
+
+▶ CT-API-04 · POST /api/orders SEM token
+  STATUS: 403 Forbidden
+  CONTENT-TYPE: application/json; charset=utf-8
+{
+  "error": "Token não fornecido."
+}
+
+▶ CT-API-04 · POST /api/orders com token INVÁLIDO
+  STATUS: 401 Unauthorized
+  CONTENT-TYPE: application/json; charset=utf-8
+{
+  "error": "Token inválido ou expirado."
+}
