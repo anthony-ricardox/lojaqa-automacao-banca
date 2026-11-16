@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Banca 06 · Checkout & Pagamentos</title>
+<!-- Fonte dos slides da banca. Gera o PDF com: npm run slides -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700;800&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  @page { size: 1920px 1080px; margin: 0; }
+  :root {
+    --bg: #091217; --surface: #0E1C24; --surface2: #13262F; --line: #22343D; --line2: #2C4450;
+    --ink: #E3ECEA; --muted: #93A6AC; --dim: #6B8188;
+    --accent: #3FD0BF; --gold: #E9B44C; --coral: #FF7A6E; --good: #3FD08A;
+    --pass: #22A396; --xfail: #BB8523;           /* validados no dataviz (modo escuro, superfície #0E1C24) */
+    --display: "Unbounded", system-ui, sans-serif;
+    --body: "Instrument Sans", system-ui, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--ink); font-family: var(--body); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .slide {
+    width: 1920px; height: 1080px; position: relative; overflow: hidden; break-after: page;
+    padding: 84px 112px 96px;
+    background:
+      radial-gradient(1200px 700px at 100% 0%, rgba(63,208,191,.10), transparent 60%),
+      radial-gradient(900px 600px at 0% 100%, rgba(233,180,76,.06), transparent 60%),
+      var(--bg);
+  }
+  .slide:last-child { break-after: auto; }
+  .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 36px; }
+  .eyebrow { font-family: var(--mono); font-size: 20px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+  .who { font-family: var(--mono); font-size: 18px; color: var(--ink); border: 1px solid var(--line2); border-radius: 999px; padding: 8px 18px; }
+  .who b { color: var(--accent); font-weight: 600; }
+  h1 { font-family: var(--display); font-weight: 800; letter-spacing: -.02em; line-height: 1.02; }
+  h2 { font-family: var(--display); font-weight: 700; font-size: 64px; letter-spacing: -.02em; line-height: 1.08; }
+  h2 em { font-style: normal; color: var(--accent); }
+  .sub { font-size: 28px; color: var(--muted); margin-top: 16px; max-width: 1400px; line-height: 1.4; }
+  .foot { position: absolute; left: 112px; right: 112px; bottom: 36px; display: flex; justify-content: space-between; font-family: var(--mono); font-size: 16px; color: var(--dim); letter-spacing: .08em; }
+  .mono { font-family: var(--mono); }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; }
+  .tag { display: inline-block; font-family: var(--mono); font-size: 15px; font-weight: 600; letter-spacing: .06em; padding: 4px 10px; border-radius: 8px; text-transform: uppercase; }
+  .t-e2e { color: var(--gold); background: rgba(233,180,76,.14); }
+  .t-api { color: var(--accent); background: rgba(63,208,191,.13); }
+  .t-neg { color: var(--coral); background: rgba(255,122,110,.14); }
+  .t-ext { color: var(--muted); background: rgba(147,166,172,.14); }
+  .t-alta { color: var(--coral); background: rgba(255,122,110,.14); }
+  .t-media { color: var(--gold); background: rgba(233,180,76,.14); }
+  .t-baixa { color: var(--muted); background: rgba(147,166,172,.14); }
+  code, .code { font-family: var(--mono); }
+
+  /* ---------- 1. CAPA ---------- */
+  .capa { display: grid; grid-template-columns: 1.15fr .85fr; gap: 40px; height: 100%; }
+  .capa h1 { font-size: 128px; margin-top: 26px; white-space: nowrap; }
+  .capa h1 span { display: block; color: var(--accent); font-size: 80px; margin-top: 14px; white-space: normal; line-height: 1.05; }
+  .capa .lead { font-size: 30px; color: var(--muted); margin-top: 28px; max-width: 980px; line-height: 1.4; }
+  .capa .lead b { color: var(--ink); font-weight: 600; }
+  .stats { display: flex; gap: 18px; margin-top: 38px; }
+  .stat { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 20px 26px; min-width: 196px; }
+  .stat strong { display: block; font-family: var(--display); font-size: 54px; font-weight: 700; line-height: 1; }
+  .stat small { display: block; font-family: var(--mono); font-size: 16px; color: var(--muted); margin-top: 10px; letter-spacing: .06em; text-transform: uppercase; line-height: 1.35; }
+  .equipe { display: flex; gap: 40px; margin-top: 40px; }
+  .pessoa { display: flex; gap: 16px; align-items: center; }
+  .av { width: 64px; height: 64px; border-radius: 16px; display: grid; place-items: center; font-family: var(--display); font-weight: 800; font-size: 22px; color: var(--bg); }
+  .pessoa b { display: block; font-size: 24px; }
+  .pessoa small { color: var(--muted); font-size: 18px; }
+  .palco { position: relative; }
+  .cartao { position: absolute; top: 70px; left: 10px; width: 600px; height: 378px; border-radius: 30px; padding: 40px 44px; transform: rotate(-6deg);
+    background: radial-gradient(130% 150% at 100% 0%, #2C8F87 0%, transparent 55%), linear-gradient(135deg, #0E1B24, #16424A);
+    box-shadow: 0 50px 90px -40px rgba(0,0,0,.8), inset 0 0 0 1px rgba(255,255,255,.06); display: flex; flex-direction: column; justify-content: space-between; color: #EAF4F2; }
+  .cartao .linha { display: flex; justify-content: space-between; align-items: center; }
+  .chip { width: 70px; height: 52px; border-radius: 10px; background: linear-gradient(135deg, #E9C46A, #B88A2A); position: relative; }
+  .chip::after { content: ""; position: absolute; inset: 14px 0; border-block: 2px solid rgba(0,0,0,.22); }
+  .marca { font-family: var(--display); font-weight: 800; font-size: 28px; letter-spacing: .04em; }
+  .numero { font-family: var(--mono); font-size: 34px; letter-spacing: .1em; white-space: nowrap; }
+  .titular { font-family: var(--mono); font-size: 18px; letter-spacing: .14em; opacity: .85; }
+  .recibo { position: absolute; top: 500px; right: -10px; width: 400px; background: #F4F7F6; color: #0E1B24; border-radius: 12px 12px 0 0; padding: 30px 30px 44px; transform: rotate(4deg); font-family: var(--mono); font-size: 21px;
+    -webkit-mask: radial-gradient(circle 11px at 50% 100%, transparent 98%, #000) bottom/26px 100% repeat-x; mask: radial-gradient(circle 11px at 50% 100%, transparent 98%, #000) bottom/26px 100% repeat-x;
+    box-shadow: 0 40px 70px -30px rgba(0,0,0,.7); }
+  .recibo .t { font-weight: 700; letter-spacing: .12em; margin-bottom: 14px; }
+  .recibo .l { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px dashed #B9C6C4; }
+  .recibo .l.off { color: #0E8478; }
+  .recibo .l.tot { font-weight: 700; font-size: 25px; border: 0; }
+  .recibo .ok { display: inline-block; margin-top: 12px; background: #D3EEEA; color: #0E8478; padding: 6px 12px; border-radius: 8px; font-weight: 700; }
+
+  /* ---------- 2. CRÍTICO ---------- */
+  .riscos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 56px; }
+  .risco { padding: 40px 38px; display: flex; flex-direction: column; gap: 18px; min-height: 560px; }
+  .risco .n { font-family: var(--mono); font-size: 18px; color: var(--muted); letter-spacing: .1em; }
+  .risco h3 { font-family: var(--display); font-size: 36px; font-weight: 700; line-height: 1.15; }
+  .risco .prova { font-family: var(--display); font-size: 40px; font-weight: 700; line-height: 1.12; margin-top: 6px; }
+  .risco .prova .de { color: var(--muted); font-size: 26px; font-family: var(--body); font-weight: 500; display: block; margin-bottom: 6px; }
+  .risco p { font-size: 24px; color: var(--muted); line-height: 1.45; }
+  .risco .rodape { margin-top: auto; display: flex; gap: 12px; align-items: center; font-family: var(--mono); font-size: 18px; color: var(--muted); }
+  .risco.bom { border-color: rgba(63,208,138,.35); }
+  .risco .vs { display: grid; grid-template-columns: 1fr auto 1fr; gap: 14px; align-items: end; margin-top: 4px; }
+  .vs .v { font-family: var(--display); font-weight: 700; font-size: 32px; white-space: nowrap; }
+  .vs .v small { display: block; font-family: var(--mono); font-size: 15px; color: var(--muted); font-weight: 400; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 8px; }
+  .vs .seta { font-size: 34px; color: var(--muted); padding-bottom: 6px; }
+  .faixa { margin-top: 36px; display: flex; gap: 28px; align-items: center; font-size: 26px; color: var(--muted); }
+  .faixa strong { font-family: var(--display); color: var(--ink); font-size: 44px; }
+
+  /* ---------- 3. MATRIZ ---------- */
+  .duas { display: grid; grid-template-columns: 1.18fr .82fr; gap: 44px; margin-top: 44px; }
+  table.mx { width: 100%; border-collapse: collapse; font-size: 20px; }
+  .mx th { text-align: left; font-family: var(--mono); font-size: 15px; letter-spacing: .1em; color: var(--muted); font-weight: 600; text-transform: uppercase; padding: 0 12px 12px; border-bottom: 1px solid var(--line2); }
+  .mx td { padding: 7px 12px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  .mx td.id { font-family: var(--mono); font-weight: 600; white-space: nowrap; font-size: 19px; }
+  .mx tr.grupo td { font-family: var(--mono); font-size: 15px; letter-spacing: .12em; color: var(--dim); text-transform: uppercase; padding-top: 14px; border-bottom: 0; }
+  .res { font-family: var(--mono); font-size: 17px; white-space: nowrap; }
+  .res.ok::before { content: "✓ "; color: var(--accent); font-weight: 700; }
+  .res.xf::before { content: "◆ "; color: var(--gold); }
+  .res.ok { color: var(--ink); } .res.xf { color: var(--gold); }
+  .painel { padding: 34px 36px; }
+  .painel h4 { font-family: var(--display); font-size: 30px; font-weight: 700; line-height: 1.2; }
+  .painel .nota { font-size: 18px; color: var(--muted); margin-top: 8px; }
+  .legenda { display: flex; gap: 24px; margin: 22px 0 6px; font-size: 18px; color: var(--muted); }
+  .legenda i { display: inline-block; width: 18px; height: 18px; border-radius: 5px; vertical-align: -3px; margin-right: 8px; }
+  .relat { margin-top: 26px; border-radius: 14px; overflow: hidden; border: 1px solid var(--line2); height: 100px; background: #fff; }
+  .relat img { width: 1500px; max-width: none; margin: -6px 0 0 -684px; display: block; }
+  .legend-img { font-family: var(--mono); font-size: 15px; color: var(--dim); margin-top: 10px; }
+
+  /* ---------- 4. ARQUITETURA ---------- */
+  .arq { display: grid; grid-template-columns: 1.25fr .75fr; gap: 48px; margin-top: 40px; }
+  .frase { font-size: 26px; color: var(--muted); line-height: 1.45; border-left: 4px solid var(--accent); padding: 4px 0 4px 22px; margin-top: 26px; }
+  .frase b { color: var(--ink); }
+  .arvore { padding: 28px 32px; font-family: var(--mono); font-size: 19px; line-height: 1.75; white-space: pre; color: var(--muted); }
+  .arvore b { color: var(--ink); font-weight: 600; }
+  .arvore .c { color: var(--dim); }
+  .regras { display: flex; flex-direction: column; gap: 14px; margin-top: 22px; }
+  .regra { display: flex; gap: 14px; align-items: baseline; font-size: 22px; }
+  .regra b { font-family: var(--mono); color: var(--accent); font-size: 20px; min-width: 34px; }
+
+  /* ---------- 5. AO VIVO ---------- */
+  .vivo h1 { font-size: 96px; display: flex; align-items: center; gap: 28px; }
+  .vivo h1 .dot { width: 34px; height: 34px; border-radius: 50%; background: var(--coral); box-shadow: 0 0 0 12px rgba(255,122,110,.18); }
+  .terms { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 48px; }
+  .term { overflow: hidden; display: flex; flex-direction: column; }
+  .term .bar { display: flex; gap: 8px; padding: 16px 20px; border-bottom: 1px solid var(--line); align-items: center; }
+  .term .bar i { width: 13px; height: 13px; border-radius: 50%; background: var(--line2); }
+  .term .bar span { margin-left: auto; font-family: var(--mono); font-size: 15px; color: var(--muted); }
+  .term .corpo { padding: 26px 24px 28px; display: flex; flex-direction: column; gap: 16px; flex: 1; }
+  .term .quem { font-family: var(--mono); font-size: 16px; letter-spacing: .1em; color: var(--muted); text-transform: uppercase; }
+  .term h3 { font-family: var(--display); font-size: 30px; font-weight: 700; line-height: 1.15; min-height: 70px; }
+  .term .cmd { font-family: var(--mono); font-size: 21px; color: var(--accent); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+  .term .cmd::before { content: "$ "; color: var(--dim); }
+  .term ul { list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 20px; color: var(--muted); line-height: 1.35; }
+  .term li::before { content: "→ "; color: var(--dim); }
+  .term li b { color: var(--ink); font-weight: 600; }
+  .modos { margin-top: 30px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .modo { padding: 20px 24px; border-radius: 16px; border: 1px dashed var(--line2); font-size: 20px; color: var(--muted); line-height: 1.4; }
+  .modo b { display: block; font-family: var(--mono); color: var(--ink); font-size: 20px; margin-bottom: 4px; }
+
+  /* ---------- 6. BUGS + PROCESSO ---------- */
+  .bp { display: grid; grid-template-columns: .95fr 1.05fr; gap: 44px; margin-top: 36px; }
+  .bugs { display: flex; flex-direction: column; }
+  .bug { display: grid; grid-template-columns: 112px 1fr auto; gap: 16px; align-items: center; padding: 13px 0; border-bottom: 1px solid var(--line); }
+  .bug .id { font-family: var(--mono); font-weight: 700; font-size: 19px; }
+  .bug .d { font-size: 20px; line-height: 1.3; }
+  .bug .d small { display: block; color: var(--muted); font-size: 16px; font-family: var(--mono); margin-top: 3px; }
+  .achado { margin-top: 18px; font-size: 19px; color: var(--muted); line-height: 1.45; }
+  .achado b { color: var(--ink); }
+  .quadro { padding: 26px 28px; }
+  .quadro .cab { display: flex; justify-content: space-between; align-items: baseline; }
+  .quadro h4 { font-family: var(--display); font-size: 26px; font-weight: 700; }
+  .quadro .fonte { font-family: var(--mono); font-size: 14px; color: var(--dim); }
+  .colunas { display: grid; grid-template-columns: .7fr .8fr 1.15fr 1.55fr; gap: 12px; margin-top: 18px; }
+  .col { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 12px 12px 14px; }
+  .col .ch { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 14px; letter-spacing: .06em; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; }
+  .col .ch b { color: var(--ink); font-size: 16px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chips span { font-family: var(--mono); font-size: 13px; padding: 3px 7px; border-radius: 6px; background: var(--surface2); border: 1px solid var(--line); color: var(--ink); }
+  .col.ok .chips span { border-color: rgba(63,208,138,.45); }
+  .col.bg .chips span { border-color: rgba(255,122,110,.5); }
+  .col.exe .chips span { border-color: rgba(233,180,76,.5); }
+  .jornada { padding: 22px 28px 18px; margin-top: 20px; }
+
+  /* ---------- 7. CONCLUSÃO ---------- */
+  .fim { display: grid; grid-template-columns: 1.3fr .7fr; gap: 56px; margin-top: 44px; }
+  .licoes { display: flex; flex-direction: column; gap: 22px; }
+  .licao { padding: 24px 30px; display: grid; grid-template-columns: 64px 1fr; gap: 22px; align-items: start; }
+  .licao p { font-size: 27px; line-height: 1.4; }
+  .licao p b { color: var(--accent); font-weight: 600; }
+  .licao small { display: block; font-family: var(--mono); font-size: 16px; color: var(--muted); margin-top: 10px; letter-spacing: .06em; }
+  .repo { padding: 36px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 22px; }
+  .qr { background: var(--ink); padding: 18px; border-radius: 16px; }
+  .qr img, .qr canvas { display: block; }
+  .repo .url { font-family: var(--mono); font-size: 19px; color: var(--ink); word-break: break-all; }
+  .repo .nums { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; margin-top: 8px; }
+  .repo .nums div { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+  .repo .nums strong { font-family: var(--display); font-size: 40px; display: block; }
+  .repo .nums small { font-family: var(--mono); font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+  .obrigado { font-family: var(--display); font-size: 44px; font-weight: 700; margin-top: 18px; }
+  .obrigado span { color: var(--accent); }
+
+  /* ---------- ANEXOS ---------- */
+  .anexo-tag { font-family: var(--mono); font-size: 18px; color: var(--gold); letter-spacing: .14em; text-transform: uppercase; }
+  .grade { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 26px; }
+  .ev { overflow: hidden; display: flex; flex-direction: column; }
+  .ev .img { height: 236px; background: #fff; overflow: hidden; display: grid; place-items: center; }
+  .ev .img img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .ev .img.contain img { object-fit: contain; background: #fff; }
+  .ev .leg { padding: 11px 16px; font-size: 17px; line-height: 1.3; }
+  .ev .leg b { font-family: var(--mono); font-size: 16px; color: var(--accent); display: block; margin-bottom: 4px; }
+  table.tb { width: 100%; border-collapse: collapse; font-size: 21px; }
+  .tb th { text-align: left; font-family: var(--mono); font-size: 15px; letter-spacing: .1em; color: var(--muted); text-transform: uppercase; padding: 0 14px 12px; border-bottom: 1px solid var(--line2); font-weight: 600; }
+  .tb td { padding: 13px 14px; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.35; }
+  .tb td:first-child { font-family: var(--mono); font-weight: 600; white-space: nowrap; }
+  .tb td.m { color: var(--muted); }
+  .bloco { padding: 28px 32px; }
+  .bloco h4 { font-family: var(--display); font-size: 26px; font-weight: 700; margin-bottom: 14px; }
+  .bloco pre { font-family: var(--mono); font-size: 18px; line-height: 1.6; color: var(--muted); white-space: pre-wrap; }
+  .bloco pre b { color: var(--accent); font-weight: 600; }
+  .bloco pre .e { color: var(--coral); }
+  .roteiro { display: flex; flex-direction: column; }
+  .passo { display: grid; grid-template-columns: 150px 1fr 140px; gap: 18px; padding: 13px 0; border-bottom: 1px solid var(--line); align-items: baseline; font-size: 21px; }
+  .passo .t { font-family: var(--mono); color: var(--muted); font-size: 18px; }
+  .passo .q { font-family: var(--mono); font-size: 17px; color: var(--accent); text-align: right; }
+  .passo.vivo .t { color: var(--coral); }
+</style>
+</head>
+<body>
+
+<!-- ================= 1 · CAPA ================= -->
+<section class="slide">
+  <div class="capa">
+    <div>
+      <div class="eyebrow">FAP 2026 · Testes de Software · Turma 4 · Prof. Alison Melo</div>
+      <h1>Banca 06<span>Checkout &amp; Pagamentos</span></h1>
+      <p class="lead">Testamos o momento em que a loja ganha dinheiro, <b>pela tela e pela API</b>, e encontramos <b>8 defeitos antes do cliente</b>.</p>
+      <div class="stats">
+        <div class="stat"><strong>19</strong><small>testes<br>automatizados</small></div>
+        <div class="stat"><strong>8</strong><small>defeitos com<br>evidência</small></div>
+        <div class="stat"><strong>3</strong><small>sistemas<br>reais</small></div>
+        <div class="stat"><strong>48 s</strong><small>suíte completa<br>do zero</small></div>
+      </div>
+      <div class="equipe">
+        <div class="pessoa"><div class="av" style="background:var(--accent)">AR</div><div><b>Anthony Ricardo</b><small>Scrum Master · E2E</small></div></div>
+        <div class="pessoa"><div class="av" style="background:var(--gold)">AN</div><div><b>André</b><small>API · dados · README</small></div></div>
+        <div class="pessoa"><div class="av" style="background:var(--ink)">RO</div><div><b>Rodrigo</b><small>PO · externos · Jira</small></div></div>
+      </div>
+    </div>
+    <div class="palco">
+      <div class="cartao">
+        <div class="linha"><div class="chip"></div><span class="marca">LOJA·QA</span></div>
+        <div class="numero">4111 •••• •••• 0610</div>
+        <div class="linha"><span class="titular">ANTHONY · ANDRÉ · RODRIGO</span><span class="titular">VAL 11/26</span></div>
+      </div>
+      <div class="recibo">
+        <div class="t">PEDIDO #06</div>
+        <div class="l"><span>Subtotal</span><span>R$ 289,90</span></div>
+        <div class="l off"><span>PIX −5%</span><span>−R$ 14,50</span></div>
+        <div class="l tot"><span>Total</span><span>R$ 275,41</span></div>
+        <div class="l"><span>POST /orders</span><span>201</span></div>
+        <span class="ok">✓ Pedido criado</span>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>LQA · BANCA 06 · CHECKOUT &amp; PAGAMENTOS</span><span>1 / 7</span></div>
+</section>
+
+<!-- ================= 2 · POR QUE É CRÍTICO ================= -->
+<section class="slide">
+  <div class="top"><div class="eyebrow">Por que é crítico</div><div class="who">Quem fala: <b>Rodrigo</b></div></div>
+  <h2>No checkout, <em>cada bug é dinheiro</em>.</h2>
+  <p class="sub">Três riscos de negócio do módulo, e o que a nossa suíte encontrou em cada um, com evidência.</p>
+  <div class="riscos">
+    <div class="card risco">
+      <div class="n">RISCO 1 · DESCONTO PIX</div>
+      <h3>O desconto que some no pedido</h3>
+      <div class="vs">
+        <div class="v"><small>Tela mostrou</small>R$ 275,41</div>
+        <div class="seta">→</div>
+        <div class="v" style="color:var(--coral)"><small>API salvou</small>R$ 289,90</div>
+      </div>
+      <p>O desconto de 5% só existe no front. O pedido vai para o banco com o valor cheio: cobrança, nota e relatórios errados.</p>
+      <div class="rodape"><span class="tag t-alta">alta</span>BUG-07 · achado pelo CT-E2E-01</div>
+    </div>
+    <div class="card risco">
+      <div class="n">RISCO 2 · CARTÃO</div>
+      <h3>Cartão vencido é aceito</h3>
+      <div class="prova"><span class="de">Validade informada</span>01/20 → pedido enviado</div>
+      <p>A loja só confere se a validade tem 5 caracteres. Também aceita número que falha no algoritmo de Luhn (BUG-04). Na vida real: chargeback.</p>
+      <div class="rodape"><span class="tag t-alta">alta</span>BUG-01 · documentado no CT-E2E-04</div>
+    </div>
+    <div class="card risco bom">
+      <div class="n">RISCO 3 · ESTOQUE</div>
+      <h3>Vender o que não existe</h3>
+      <div class="prova"><span class="de">Estoque do teclado</span>99.947 → 99.946</div>
+      <p>Aqui a loja acerta: cada pedido baixa exatamente 1 unidade, e quantidade acima do estoque é recusada com 409.</p>
+      <div class="rodape"><span class="tag t-api">✓ ok</span>CT-API-01 e CT-API-05 passaram</div>
+    </div>
+  </div>
+  <div class="faixa"><strong>8</strong><span>defeitos registrados no Jira, cada um com print, vídeo ou trecho de código · <b style="color:var(--ink)">3 de severidade alta</b></span></div>
+  <div class="foot"><span>LQA · BANCA 06 · CHECKOUT &amp; PAGAMENTOS</span><span>2 / 7</span></div>
+</section>
+
+<!-- ================= 3 · MATRIZ & RESULTADO ================= -->
+<section class="slide">
+  <div class="top"><div class="eyebrow">Matriz de testes &amp; resultado</div><div class="who">Quem fala: <b>André</b></div></div>
+  <h2>19 testes, <em>19 dentro do esperado</em>.</h2>
+  <div class="duas">
+    <table class="mx">
+      <thead><tr><th>ID</th><th>Cenário</th><th>Tipo</th><th>Resultado</th></tr></thead>
+      <tbody>
+        <tr class="grupo"><td colspan="4">Loja QA · tela</td></tr>
+        <tr><td class="id">CT-E2E-01</td><td>PIX aplica 5% e cria o pedido</td><td><span class="tag t-e2e">e2e</span></td><td class="res ok">passou</td></tr>
+        <tr><td class="id">CT-E2E-02</td><td>Bandeira Visa/Master e 12 parcelas</td><td><span class="tag t-e2e">e2e</span></td><td class="res ok">passou</td></tr>
+        <tr><td class="id">CT-E2E-03</td><td>Cartão incompleto é bloqueado</td><td><span class="tag t-neg">negativo</span></td><td class="res ok">passou</td></tr>
+        <tr><td class="id">CT-E2E-04</td><td>Cartão vencido deveria ser bloqueado</td><td><span class="tag t-neg">negativo</span></td><td class="res xf">BUG-01</td></tr>
+        <tr class="grupo"><td colspan="4">Loja QA · API</td></tr>
+        <tr><td class="id">CT-API-01</td><td>Cria pedido (201) e baixa o estoque</td><td><span class="tag t-api">api</span></td><td class="res ok">passou</td></tr>
+        <tr><td class="id">CT-API-02</td><td>Pedido aparece em /orders/me</td><td><span class="tag t-api">api</span></td><td class="res ok">passou</td></tr>
+        <tr><td class="id">CT-API-03</td><td>Sem itens/endereço e quantidade 0 → 400</td><td><span class="tag t-neg">negativo</span></td><td class="res ok">passou</td></tr>
+        <tr><td class="id">CT-API-04</td><td>Sem token deveria dar 401</td><td><span class="tag t-neg">negativo</span></td><td class="res xf">BUG-08</td></tr>
+        <tr><td class="id">CT-API-05</td><td>Acima do estoque → 409</td><td><span class="tag t-neg">negativo</span></td><td class="res ok">passou</td></tr>
+        <tr class="grupo"><td colspan="4">Desafio de mercado</td></tr>
+        <tr><td class="id">CT-EXT-01</td><td>SauceDemo: checkout da mochila</td><td><span class="tag t-ext">externo</span></td><td class="res ok">passou</td></tr>
+        <tr><td class="id">CT-EXT-02</td><td>Rick and Morty API · 8 casos</td><td><span class="tag t-ext">externo</span></td><td class="res ok">7 + achado</td></tr>
+      </tbody>
+    </table>
+    <div class="card painel">
+      <h4>Resultado por suíte</h4>
+      <p class="nota">Execução completa de 15/11/2026, do zero, com login novo</p>
+      <div class="legenda"><span><i style="background:var(--pass)"></i>passou</span><span><i style="background:var(--xfail)"></i>falha esperada: bug documentado</span></div>
+      <!-- Barras empilhadas: 1 unidade = 1 teste = 54 px. Cores validadas (dataviz). -->
+      <svg width="600" height="300" viewBox="0 0 600 300" role="img" aria-label="Resultado por suíte: 16 passaram e 3 falharam como esperado">
+        <g font-family="Instrument Sans" font-size="20" fill="#E3ECEA">
+          <text x="0" y="41">Loja E2E</text>
+          <text x="0" y="101">Loja API</text>
+          <text x="0" y="161">SauceDemo</text>
+          <text x="0" y="221">Rick and Morty</text>
+          <text x="0" y="281">Setup (login)</text>
+        </g>
+        <g>
+          <!-- Loja E2E: 3 + 1 -->
+          <path d="M160 20 h160 v30 h-160 z" fill="#22A396"/><path d="M322 20 h50 a4 4 0 0 1 4 4 v22 a4 4 0 0 1 -4 4 h-50 z" fill="#BB8523"/>
+          <!-- Loja API: 4 + 1 -->
+          <path d="M160 80 h214 v30 h-214 z" fill="#22A396"/><path d="M376 80 h50 a4 4 0 0 1 4 4 v22 a4 4 0 0 1 -4 4 h-50 z" fill="#BB8523"/>
+          <!-- SauceDemo: 1 -->
+          <path d="M160 140 h50 a4 4 0 0 1 4 4 v22 a4 4 0 0 1 -4 4 h-50 z" fill="#22A396"/>
+          <!-- Rick and Morty: 7 + 1 -->
+          <path d="M160 200 h376 v30 h-376 z" fill="#22A396"/><path d="M538 200 h50 a4 4 0 0 1 4 4 v22 a4 4 0 0 1 -4 4 h-50 z" fill="#BB8523"/>
+          <!-- Setup: 1 -->
+          <path d="M160 260 h50 a4 4 0 0 1 4 4 v22 a4 4 0 0 1 -4 4 h-50 z" fill="#22A396"/>
+        </g>
+        <g font-family="JetBrains Mono" font-size="18" font-weight="700" fill="#091217" text-anchor="middle">
+          <text x="240" y="41">3</text><text x="349" y="41">1</text>
+          <text x="267" y="101">4</text><text x="403" y="101">1</text>
+          <text x="187" y="161">1</text>
+          <text x="348" y="221">7</text><text x="565" y="221">1</text>
+          <text x="187" y="281">1</text>
+        </g>
+      </svg>
+      <div class="relat"><img src="../../docs/evidencias/relatorio-visao-geral.png" alt="Relatório HTML do Playwright: 19 passed, 0 failed"></div>
+      <div class="legend-img">Relatório HTML do Playwright · Passed 19 · Failed 0 · 48,4 s</div>
+    </div>
+  </div>
+  <div class="foot"><span>LQA · BANCA 06 · CHECKOUT &amp; PAGAMENTOS</span><span>3 / 7</span></div>
+</section>
+
+<!-- ================= 4 · ARQUITETURA ================= -->
+<section class="slide">
+  <div class="top"><div class="eyebrow">Arquitetura</div><div class="who">Quem fala: <b>Anthony</b></div></div>
+  <h2>Cada camada faz <em>uma coisa só</em>.</h2>
+  <div class="arq">
+    <div>
+      <!-- Diagrama: cadeia do nosso código (esquerda) e os sistemas reais (direita) -->
+      <svg width="1000" height="600" viewBox="0 0 1000 600" role="img" aria-label="Fluxo: comando, config, setup, fixture, Page Object e spec, ligados à API, à Loja QA e ao ViaCEP">
+        <defs><marker id="seta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#6B8188"/></marker></defs>
+        <rect x="0" y="0" width="560" height="600" rx="18" fill="#0E1C24" stroke="#22343D"/>
+        <text x="28" y="40" font-family="JetBrains Mono" font-size="16" fill="#93A6AC" letter-spacing="2">NOSSO CÓDIGO</text>
+        <rect x="660" y="150" width="340" height="450" rx="18" fill="#0E1C24" stroke="#22343D"/>
+        <text x="688" y="190" font-family="JetBrains Mono" font-size="16" fill="#93A6AC" letter-spacing="2">SISTEMAS REAIS</text>
+        <g fill="none" stroke="#6B8188" stroke-width="1.6">
+          <path d="M280 124V142" marker-end="url(#seta)"/><path d="M280 206V224" marker-end="url(#seta)"/><path d="M280 288V306" marker-end="url(#seta)"/>
+          <path d="M280 370V388" marker-end="url(#seta)"/><path d="M280 452V470" marker-end="url(#seta)"/>
+          <path d="M532 256H688" marker-end="url(#seta)"/><path d="M532 420H688" marker-end="url(#seta)"/>
+          <path d="M830 388V300" marker-end="url(#seta)"/><path d="M830 452V488" marker-end="url(#seta)"/>
+        </g>
+        <g font-family="Instrument Sans">
+          <g><rect x="28" y="62" width="504" height="62" rx="12" fill="#13262F" stroke="#2C4450"/><text x="48" y="90" font-size="21" font-weight="600" fill="#E3ECEA">1 · npm run test:e2e</text><text x="48" y="113" font-size="17" fill="#93A6AC">você roda o comando</text></g>
+          <g><rect x="28" y="144" width="504" height="62" rx="12" fill="#13262F" stroke="#2C4450"/><text x="48" y="172" font-size="21" font-weight="600" fill="#E3ECEA">2 · playwright.config.ts</text><text x="48" y="195" font-size="17" fill="#93A6AC">lê o .env; roda o setup antes de e2e e api</text></g>
+          <g><rect x="28" y="226" width="504" height="62" rx="12" fill="#13262F" stroke="#2C4450"/><text x="48" y="254" font-size="21" font-weight="600" fill="#E3ECEA">3 · tests/setup/auth.setup.ts</text><text x="48" y="277" font-size="17" fill="#93A6AC">login 1x pela API; token guardado por 1 h</text></g>
+          <g><rect x="28" y="308" width="504" height="62" rx="12" fill="#13262F" stroke="#2C4450"/><text x="48" y="336" font-size="21" font-weight="600" fill="#E3ECEA">4 · fixtures/auth.fixture.ts</text><text x="48" y="359" font-size="17" fill="#93A6AC">token no navegador: a loja já abre logada</text></g>
+          <g><rect x="28" y="390" width="504" height="62" rx="12" fill="rgba(63,208,191,.12)" stroke="#3FD0BF" stroke-width="2"/><text x="48" y="418" font-size="21" font-weight="600" fill="#E3ECEA">5 · pages/CheckoutPage.ts</text><text x="48" y="441" font-size="17" fill="#93A6AC">COMO mexer na tela · nenhum expect</text></g>
+          <g><rect x="28" y="472" width="504" height="62" rx="12" fill="#13262F" stroke="#2C4450"/><text x="48" y="500" font-size="21" font-weight="600" fill="#E3ECEA">6 · lojaqa-modulo-6.spec.ts</text><text x="48" y="523" font-size="17" fill="#93A6AC">O QUE testar · expect decide</text></g>
+          <g><rect x="688" y="226" width="284" height="74" rx="12" fill="#13262F" stroke="#2C4450"/><text x="708" y="256" font-size="21" font-weight="600" fill="#E3ECEA">API · Render</text><text x="708" y="282" font-size="16" fill="#93A6AC">/login · /orders · /products</text></g>
+          <g><rect x="688" y="388" width="284" height="64" rx="12" fill="#13262F" stroke="#2C4450"/><text x="708" y="416" font-size="21" font-weight="600" fill="#E3ECEA">Loja QA</text><text x="708" y="440" font-size="16" fill="#93A6AC">vitrine → checkout → painel</text></g>
+          <g><rect x="688" y="490" width="284" height="64" rx="12" fill="#13262F" stroke="#2C4450"/><text x="708" y="518" font-size="21" font-weight="600" fill="#E3ECEA">ViaCEP</text><text x="708" y="542" font-size="16" fill="#93A6AC">CEP vira endereço</text></g>
+          <text x="610" y="246" font-size="16" fill="#93A6AC" text-anchor="middle">login 1x</text>
+          <text x="610" y="410" font-size="16" fill="#93A6AC" text-anchor="middle">dirige a tela</text>
+          <text x="842" y="350" font-size="16" fill="#93A6AC">cria o pedido</text>
+          <text x="842" y="476" font-size="16" fill="#93A6AC">busca CEP</text>
+        </g>
+      </svg>
+      <p class="frase"><b>O spec diz o que testar, o Page Object diz como mexer na tela, a fixture prepara o terreno e o config amarra tudo.</b></p>
+    </div>
+    <div>
+      <div class="card arvore"><b>pages/</b>          <span class="c">COMO (sem expect)</span>
+<b>fixtures/</b>       <span class="c">prepara o terreno</span>
+<b>data/</b>           <span class="c">com quais dados</span>
+<b>tests/setup/</b>    <span class="c">login 1x via API</span>
+<b>tests/e2e/</b>      <span class="c">O QUE · tela</span>
+<b>tests/api/</b>      <span class="c">O QUE · API</span>
+<b>rick-and-morty/</b> <span class="c">mesma arquitetura,</span>
+                <span class="c">API Object no lugar</span>
+                <span class="c">do Page Object</span></div>
+      <div class="regras">
+        <div class="regra"><b>0</b><span><code>expect</code> dentro do Page Object</span></div>
+        <div class="regra"><b>0</b><span><code>waitForTimeout</code>: só eventos reais</span></div>
+        <div class="regra"><b>1x</b><span>login por hora (API: 5 a cada 15 min)</span></div>
+        <div class="regra"><b>ID</b><span>CT-xx igual no código, no Jira e aqui</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>LQA · BANCA 06 · CHECKOUT &amp; PAGAMENTOS</span><span>4 / 7</span></div>
+</section>
+
+<!-- ================= 5 · AO VIVO ================= -->
+<section class="slide vivo">
+  <div class="top"><div class="eyebrow">Demonstração</div><div class="who">Quem fala: <b>os três</b></div></div>
+  <h1><span class="dot"></span>AO VIVO</h1>
+  <div class="terms">
+    <div class="card term"><div class="bar"><i></i><i></i><i></i><span>1 · 2:30</span></div><div class="corpo">
+      <div class="quem">Anthony · tela</div><h3>Checkout da Loja QA</h3>
+      <div class="cmd">npm run test:e2e</div>
+      <ul><li>PIX: total cai <b>5%</b></li><li>API responde <b>201</b> e o pedido aparece no painel</li><li>Visa → Mastercard, <b>12 parcelas</b></li><li>Cartão incompleto <b>bloqueado</b></li><li>Vencido: <b>BUG-01</b> documentado</li></ul></div></div>
+    <div class="card term"><div class="bar"><i></i><i></i><i></i><span>2 · 2:00</span></div><div class="corpo">
+      <div class="quem">André · API</div><h3>POST /orders no console</h3>
+      <div class="cmd">npm run test:api:ui</div>
+      <ul><li><b>201</b> e estoque <b>−1</b></li><li><b>400</b> sem itens · quantidade 0</li><li><b>409</b> acima do estoque</li><li><b>BUG-08</b>: 403 onde o contrato diz 401</li></ul></div></div>
+    <div class="card term"><div class="bar"><i></i><i></i><i></i><span>3 · 0:50</span></div><div class="corpo">
+      <div class="quem">Rodrigo · mercado E2E</div><h3>SauceDemo</h3>
+      <div class="cmd">npm run test:sauce</div>
+      <ul><li>Login → mochila → checkout</li><li>Total = itens <b>+</b> imposto</li><li><b>"Thank you for your order!"</b></li></ul></div></div>
+    <div class="card term"><div class="bar"><i></i><i></i><i></i><span>4 · 0:55</span></div><div class="corpo">
+      <div class="quem">Anthony · mercado API</div><h3>Rick and Morty API</h3>
+      <div class="cmd">npm run test:rm:ui</div>
+      <ul><li>Rick: <b>200</b> + contrato</li><li>Filtros e paginação</li><li>Encadeia: 1º episódio = <b>Pilot</b></li><li><b>404</b> tratado · achado: <b>500</b></li></ul></div></div>
+  </div>
+  <div class="modos">
+    <div class="modo"><b>--headed</b>demonstrar: o robô na tela, com SLOWMO=400</div>
+    <div class="modo"><b>--ui</b>explicar: linha do tempo, DOM e cada requisição</div>
+    <div class="modo"><b>--debug</b>investigar: pausa antes de cada ação</div>
+    <div class="modo"><b>npm run report</b>plano B: relatório com vídeo e trace</div>
+  </div>
+  <div class="foot"><span>LQA · BANCA 06 · CHECKOUT &amp; PAGAMENTOS</span><span>5 / 7</span></div>
+</section>
+
+<!-- ================= 6 · BUGS + PROCESSO ================= -->
+<section class="slide">
+  <div class="top"><div class="eyebrow">Defeitos &amp; processo ágil</div><div class="who">Quem fala: <b>Rodrigo</b></div></div>
+  <h2>Todo bug virou <em>card, evidência e teste</em>.</h2>
+  <div class="bp">
+    <div>
+      <div class="bugs">
+        <div class="bug"><span class="id">BUG-01</span><span class="d">Cartão vencido é aceito<small>CT-E2E-04 · vídeo</small></span><span class="tag t-alta">alta</span></div>
+        <div class="bug"><span class="id">BUG-06</span><span class="d">Painel abre com orderId=undefined<small>CT-E2E-01 · print</small></span><span class="tag t-alta">alta</span></div>
+        <div class="bug"><span class="id">BUG-07</span><span class="d">PIX salvo com o valor cheio na API<small>CT-E2E-01 + GET /orders/me</small></span><span class="tag t-alta">alta</span></div>
+        <div class="bug"><span class="id">BUG-02</span><span class="d">"Com juros" sem juros de 7x a 12x<small>print das parcelas</small></span><span class="tag t-media">média</span></div>
+        <div class="bug"><span class="id">BUG-04</span><span class="d">Número que falha no Luhn é aceito<small>print + pedido interceptado</small></span><span class="tag t-media">média</span></div>
+        <div class="bug"><span class="id">BUG-08</span><span class="d">API troca os códigos 401 e 403<small>CT-API-04 · relatório</small></span><span class="tag t-media">média</span></div>
+        <div class="bug"><span class="id">BUG-03</span><span class="d">PIX: 289,90 − 14,50 vira 275,41<small>print do resumo</small></span><span class="tag t-baixa">baixa</span></div>
+        <div class="bug"><span class="id">BUG-05</span><span class="d">Painel: status vermelho, frete "R$ 16.9"<small>painel.js, linhas 196 e 260</small></span><span class="tag t-baixa">baixa</span></div>
+      </div>
+      <p class="achado"><b>E um achado na API pública:</b> <code>GET /character/abc</code> responde 500 (erro do servidor) para um erro de quem chama, que deveria ser 400.</p>
+    </div>
+    <div>
+      <div class="card quadro">
+        <div class="cab"><h4>Quadro SCRUM no Jira</h4><span class="fonte">gerado dos dados do Jira · 15/11/2026</span></div>
+        <div class="colunas">
+          <div class="col"><div class="ch"><span>Backlog</span><b>1</b></div><div class="chips"><span>27</span></div></div>
+          <div class="col exe"><div class="ch"><span>Execução</span><b>2</b></div><div class="chips"><span>10</span><span>26</span></div></div>
+          <div class="col bg"><div class="ch"><span>Bugs</span><b>8</b></div><div class="chips"><span>28</span><span>29</span><span>30</span><span>31</span><span>32</span><span>34</span><span>35</span><span>36</span></div></div>
+          <div class="col ok"><div class="ch"><span>Concluído</span><b>20</b></div><div class="chips"><span>6</span><span>7</span><span>8</span><span>9</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span><span>19</span><span>20</span><span>21</span><span>22</span><span>23</span><span>24</span><span>25</span><span>33</span></div></div>
+        </div>
+      </div>
+      <div class="card jornada">
+        <div class="cab" style="display:flex;justify-content:space-between;align-items:baseline"><h4 style="font-family:var(--display);font-size:24px;font-weight:700">Do vermelho ao verde em 6 execuções</h4><span class="fonte" style="font-family:var(--mono);font-size:14px;color:var(--dim)">CT-E2E-01 a 03 · 12/11</span></div>
+        <!-- Colunas: testes aprovados (de 3) por execução. Série única: sem legenda, o título nomeia. -->
+        <svg width="760" height="268" viewBox="0 0 760 268" role="img" aria-label="Testes aprovados por execução: 0, 2, 2, 3, 3, 3">
+          <g stroke="#22343D" stroke-width="1"><line x1="56" x2="740" y1="170" y2="170"/><line x1="56" x2="740" y1="126" y2="126"/><line x1="56" x2="740" y1="82" y2="82"/><line x1="56" x2="740" y1="38" y2="38"/></g>
+          <g font-family="JetBrains Mono" font-size="14" fill="#6B8188" text-anchor="end"><text x="44" y="175">0</text><text x="44" y="131">1</text><text x="44" y="87">2</text><text x="44" y="43">3</text></g>
+          <g fill="#22A396">
+            <rect x="96" y="167" width="64" height="3" rx="1"/>
+            <path d="M210 170 V86 a4 4 0 0 1 4 -4 h56 a4 4 0 0 1 4 4 V170 z"/>
+            <path d="M324 170 V86 a4 4 0 0 1 4 -4 h56 a4 4 0 0 1 4 4 V170 z"/>
+            <path d="M438 170 V42 a4 4 0 0 1 4 -4 h56 a4 4 0 0 1 4 4 V170 z"/>
+            <path d="M552 170 V42 a4 4 0 0 1 4 -4 h56 a4 4 0 0 1 4 4 V170 z"/>
+            <path d="M666 170 V42 a4 4 0 0 1 4 -4 h56 a4 4 0 0 1 4 4 V170 z"/>
+          </g>
+          <g font-family="JetBrains Mono" font-size="14" fill="#93A6AC" text-anchor="middle"><text x="128" y="192">1ª</text><text x="242" y="192">2ª</text><text x="356" y="192">3ª</text><text x="470" y="192">4ª</text><text x="584" y="192">5ª</text><text x="698" y="192">6ª</text></g>
+          <g font-family="Instrument Sans" font-size="13" fill="#E3ECEA" text-anchor="middle">
+            <text x="128" y="214">ViaCEP não</text><text x="128" y="230">disparava</text><text x="128" y="248" fill="#3FD0BF">→ waitForURL</text>
+            <text x="242" y="214">orderId=</text><text x="242" y="230">undefined</text><text x="242" y="248" fill="#3FD0BF">→ BUG-06</text>
+            <text x="356" y="214">resposta</text><text x="356" y="230">descartada</text><text x="356" y="248" fill="#3FD0BF">→ route.fetch</text>
+            <text x="584" y="214">estável: 3 execuções</text><text x="584" y="230">verdes seguidas</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>LQA · BANCA 06 · CHECKOUT &amp; PAGAMENTOS</span><span>6 / 7</span></div>
+</section>
+
+<!-- ================= 7 · CONCLUSÃO ================= -->
+<section class="slide">
+  <div class="top"><div class="eyebrow">Conclusão</div><div class="who">Quem fala: <b>os três</b></div></div>
+  <h2>O que levamos <em>daqui</em>.</h2>
+  <div class="fim">
+    <div class="licoes">
+      <div class="card licao"><div class="av" style="background:var(--accent)">AR</div><div><p><b>Esperar o evento certo, nunca o relógio.</b> <code>waitForURL</code> e <code>waitForResponse</code> acabaram com a instabilidade sem um único <code>sleep</code>.</p><small>ANTHONY · E2E E ARQUITETURA</small></div></div>
+      <div class="card licao"><div class="av" style="background:var(--gold)">AN</div><div><p><b>O contrato é a fonte da verdade.</b> Validar status, headers e JSON revelou 401 e 403 trocados numa API que "funcionava".</p><small>ANDRÉ · API E DADOS</small></div></div>
+      <div class="card licao"><div class="av" style="background:var(--ink)">RO</div><div><p><b>Teste bom vira documentação.</b> Cada caso tem card, evidência e bug ligado no Jira: rastreável do requisito ao defeito.</p><small>RODRIGO · PROCESSO E MERCADO</small></div></div>
+      <p class="obrigado">Obrigado. <span>Perguntas?</span></p>
+    </div>
+    <div class="card repo">
+      <div class="qr" id="qr"></div>
+      <div class="url">github.com/anthony-ricardox/<br>lojaqa-automacao-banca</div>
+      <div class="nums">
+        <div><strong>19</strong><small>testes</small></div>
+        <div><strong>8</strong><small>defeitos</small></div>
+        <div><strong>31</strong><small>cards no Jira</small></div>
+        <div><strong>0</strong><small>waitForTimeout</small></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>LQA · BANCA 06 · CHECKOUT &amp; PAGAMENTOS</span><span>7 / 7</span></div>
+</section>
+
+<!-- ================= ANEXO A · EVIDÊNCIAS ================= -->
+<section class="slide">
+  <div class="top"><div class="anexo-tag">Anexo A · material de apoio</div><div class="who">Para as perguntas</div></div>
+  <h2>Evidências <em>reais</em> das execuções</h2>
+  <div class="grade">
+    <div class="card ev"><div class="img"><img src="../../docs/evidencias/CT-E2E-01-print.png" alt=""></div><div class="leg"><b>CT-E2E-01 · BUG-06 e BUG-07</b>Pedido criado; o painel avisa "não encontrado" e lista R$ 289,90</div></div>
+    <div class="card ev"><div class="img"><img src="../../docs/evidencias/CT-E2E-02-print.png" alt=""></div><div class="leg"><b>CT-E2E-02</b>Bandeira Mastercard detectada e parcelas carregadas</div></div>
+    <div class="card ev"><div class="img"><img src="../../docs/evidencias/CT-E2E-03-print.png" alt=""></div><div class="leg"><b>CT-E2E-03</b>"Informe o número completo do cartão de crédito."</div></div>
+    <div class="card ev"><div class="img contain"><img src="../../docs/evidencias/BUG-02-parcelas-sem-juros.png" alt=""></div><div class="leg"><b>BUG-02</b>7x de R$ 41,41 "c/ juros" = 289,90 ÷ 7</div></div>
+    <div class="card ev"><div class="img"><img src="../../docs/evidencias/relatorio-CT-API-04.png" alt=""></div><div class="leg"><b>CT-API-04 · BUG-08</b>Expected 401 · Received 403</div></div>
+    <div class="card ev"><div class="img"><img src="../../docs/evidencias/CT-EXT-01-print.png" alt=""></div><div class="leg"><b>CT-EXT-01</b>SauceDemo: "Thank you for your order!"</div></div>
+  </div>
+  <div class="foot"><span>LQA · BANCA 06 · ANEXOS</span><span>A</span></div>
+</section>
+
+<!-- ================= ANEXO B · RICK AND MORTY ================= -->
+<section class="slide">
+  <div class="top"><div class="anexo-tag">Anexo B · desafio de mercado de API</div><div class="who">Quem fala: <b>Anthony</b></div></div>
+  <h2>Rick and Morty API: <em>8 casos, 1 achado</em></h2>
+  <div class="duas" style="grid-template-columns:1.15fr .85fr">
+    <table class="tb">
+      <thead><tr><th>Caso</th><th>O que prova</th><th>Resultado</th></tr></thead>
+      <tbody>
+        <tr><td>02.1</td><td>GET /character/1: 200, dados do Rick e o <b>contrato</b> (tipo de cada campo)</td><td class="res ok">passou</td></tr>
+        <tr><td>02.2</td><td>Filtros name + status valem para todos os resultados</td><td class="res ok">passou</td></tr>
+        <tr><td>02.3</td><td>Paginação: 20 por página, ids 21 a 40, links prev/next</td><td class="res ok">passou</td></tr>
+        <tr><td>02.4</td><td><b>Encadeamento:</b> segue o link do 1º episódio → "Pilot"</td><td class="res ok">passou</td></tr>
+        <tr><td>02.5</td><td>Vários ids numa chamada: família Smith</td><td class="res ok">passou</td></tr>
+        <tr><td>02.6</td><td>Id inexistente: 404 "Character not found"</td><td class="res ok">passou</td></tr>
+        <tr><td>02.7</td><td>Busca sem resultado: 404 "There is nothing here"</td><td class="res ok">passou</td></tr>
+        <tr><td>02.8</td><td><b>Achado:</b> id "abc" devolve 500; o certo é 400</td><td class="res xf">documentado</td></tr>
+      </tbody>
+    </table>
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <div class="card bloco"><h4>Pasta própria, mesma arquitetura</h4><pre><b>rick-and-morty/</b>
+├─ api/RickAndMortyApi.ts   <span style="color:#6B8188">API Object</span>
+├─ fixtures/                <span style="color:#6B8188">entrega { rickApi }</span>
+├─ data/                    <span style="color:#6B8188">massa de dados</span>
+├─ tests/                   <span style="color:#6B8188">CT-EXT-02.1 a 02.8</span>
+└─ README.md                <span style="color:#6B8188">documentação</span></pre></div>
+      <div class="card bloco"><h4>O que aparece no console</h4><pre>▶ CT-EXT-02.8 · personagem "abc"
+  GET …/api/character/abc
+  STATUS: <span class="e">500 Internal Server Error</span>
+{ "error": "Hey! you must provide an id" }</pre></div>
+    </div>
+  </div>
+  <div class="foot"><span>LQA · BANCA 06 · ANEXOS</span><span>B</span></div>
+</section>
+
+<!-- ================= ANEXO C · COMANDOS ================= -->
+<section class="slide">
+  <div class="top"><div class="anexo-tag">Anexo C · como rodar</div><div class="who">Para a demonstração</div></div>
+  <h2>Normal, UI ou debug: <em>qual usar</em></h2>
+  <div class="duas" style="grid-template-columns:1fr 1fr;margin-top:40px">
+    <table class="tb">
+      <thead><tr><th>Comando</th><th>O que faz</th></tr></thead>
+      <tbody>
+        <tr><td>npm test</td><td class="m">Tudo: 19 testes, cerca de 50 s</td></tr>
+        <tr><td>npm run test:e2e</td><td class="m">Loja QA na tela (headed)</td></tr>
+        <tr><td>npm run test:e2e:ui</td><td class="m">Loja QA no UI Mode</td></tr>
+        <tr><td>npm run test:e2e:debug</td><td class="m">Inspector: pausa a cada ação</td></tr>
+        <tr><td>npm run test:api</td><td class="m">API da Loja no terminal</td></tr>
+        <tr><td>npm run test:api:ui</td><td class="m">API no UI Mode (aba de rede)</td></tr>
+        <tr><td>npm run test:sauce</td><td class="m">SauceDemo na tela</td></tr>
+        <tr><td>npm run test:rm</td><td class="m">Rick and Morty no terminal</td></tr>
+        <tr><td>npm run test:rm:ui</td><td class="m">Rick and Morty no UI Mode</td></tr>
+        <tr><td>npm run report</td><td class="m">Relatório HTML com vídeo e trace</td></tr>
+      </tbody>
+    </table>
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <div class="card bloco"><h4>Recomendação para a banca</h4><pre><b>Tela:</b> npm run test:e2e com SLOWMO=400
+  a plateia vê cada campo sendo preenchido
+<b>API:</b> npm run test:api:ui e test:rm:ui
+  clique no teste e mostre a requisição e a resposta
+<b>Evite:</b> --debug ao vivo
+  ele espera um clique a cada passo
+<b>Plano B:</b> npm run report já aberto</pre></div>
+      <div class="card bloco"><h4>Dia da banca</h4><pre><b>07h30</b> abrir /api/health (acorda o Render)
+<b>07h45</b> npm test uma vez (gera o token)
+<b>08h15</b> zoom 150%, SLOWMO=400, relatório aberto
+<b>429?</b>  mais de 5 logins: esperar 15 min</pre></div>
+    </div>
+  </div>
+  <div class="foot"><span>LQA · BANCA 06 · ANEXOS</span><span>C</span></div>
+</section>
+
+<!-- ================= ANEXO D · ROTEIRO ================= -->
+<section class="slide">
+  <div class="top"><div class="anexo-tag">Anexo D · roteiro de 12 minutos</div><div class="who">Ensaio</div></div>
+  <h2>Quem fala, <em>quando</em></h2>
+  <div class="duas" style="grid-template-columns:1.05fr .95fr;margin-top:36px">
+    <div class="roteiro">
+      <div class="passo"><span class="t">0:00–2:00</span><span>Slides 1 e 2 · equipe e por que é crítico</span><span class="q">Rodrigo</span></div>
+      <div class="passo"><span class="t">2:00–3:15</span><span>Slide 3 · matriz e resultado</span><span class="q">André</span></div>
+      <div class="passo"><span class="t">3:15–4:30</span><span>Slide 4 · arquitetura</span><span class="q">Anthony</span></div>
+      <div class="passo vivo"><span class="t">4:30–7:00</span><span>AO VIVO 1 · npm run test:e2e</span><span class="q">Anthony</span></div>
+      <div class="passo vivo"><span class="t">7:00–9:00</span><span>AO VIVO 2 · npm run test:api:ui</span><span class="q">André</span></div>
+      <div class="passo vivo"><span class="t">9:00–9:50</span><span>AO VIVO 3 · npm run test:sauce</span><span class="q">Rodrigo</span></div>
+      <div class="passo vivo"><span class="t">9:50–10:45</span><span>AO VIVO 4 · npm run test:rm:ui</span><span class="q">Anthony</span></div>
+      <div class="passo"><span class="t">10:45–11:15</span><span>Slide 6 · defeitos e processo</span><span class="q">Rodrigo</span></div>
+      <div class="passo"><span class="t">11:15–12:00</span><span>Slide 7 · uma lição de cada um</span><span class="q">os três</span></div>
+    </div>
+    <table class="tb">
+      <thead><tr><th>Pergunta provável</th><th>Resposta curta</th></tr></thead>
+      <tbody>
+        <tr><td style="white-space:normal">Por que o login não aparece?</td><td class="m">Regra da atividade e limite de 5 logins/15 min: setup pela API + fixture</td></tr>
+        <tr><td style="white-space:normal">Por que o Page Object não tem expect?</td><td class="m">Ele age, o spec verifica. Mudou a tela, conserta-se num lugar</td></tr>
+        <tr><td style="white-space:normal">O que é test.fail?</td><td class="m">Bug conhecido escrito como teste: falha esperada, avisa quando corrigirem</td></tr>
+        <tr><td style="white-space:normal">Como evitam esperas fixas?</td><td class="m">waitForResponse, waitForURL e expect com repetição</td></tr>
+        <tr><td style="white-space:normal">Por que 403 é bug?</td><td class="m">Sem credencial é 401; 403 é para quem se identificou sem permissão</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="foot"><span>LQA · BANCA 06 · ANEXOS</span><span>D</span></div>
+</section>
+
+<script>
+  // QR code do repositório (biblioteca qrcodejs, cdnjs). Sinaliza quando a página está pronta para virar PDF.
+  window.addEventListener('load', () => {
+    new QRCode(document.getElementById('qr'), {
+      text: 'https://github.com/anthony-ricardox/lojaqa-automacao-banca',
+      width: 300, height: 300, colorDark: '#091217', colorLight: '#E3ECEA', correctLevel: QRCode.CorrectLevel.M,
+    });
+    setTimeout(() => { window.__pronto = true; }, 300);
+  });
+</script>
+</body>
+</html>
