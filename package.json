@@ -5,11 +5,18 @@
   "scripts": {
     "test": "playwright test",
     "test:e2e": "playwright test tests/e2e/lojaqa-modulo-6.spec.ts --headed",
+    "test:e2e:ui": "playwright test tests/e2e/lojaqa-modulo-6.spec.ts --ui",
+    "test:e2e:debug": "playwright test tests/e2e/lojaqa-modulo-6.spec.ts --debug",
     "test:api": "playwright test tests/api/lojaqa-api-6.spec.ts",
-    "test:ext": "playwright test tests/e2e/externo-e2e.spec.ts tests/api/externo-api.spec.ts --headed",
+    "test:api:ui": "playwright test tests/api/lojaqa-api-6.spec.ts --ui",
+    "test:sauce": "playwright test tests/e2e/externo-e2e.spec.ts --headed",
+    "test:rm": "playwright test --project=rick-and-morty",
+    "test:rm:ui": "playwright test --project=rick-and-morty --ui",
+    "test:ext": "playwright test tests/e2e/externo-e2e.spec.ts rick-and-morty --headed",
     "test:ui": "playwright test --ui",
     "report": "playwright show-report",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "slides": "node presentation/slides/gerar-pdf.mjs"
   },
   "license": "MIT",
   "devDependencies": {

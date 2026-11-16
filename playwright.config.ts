@@ -25,7 +25,7 @@ export default defineConfig({
     launchOptions: { slowMo: Number(process.env.SLOWMO ?? 0) }, // velocidade do robô
   },
 
-  // ===== BLOCO C: os 3 "projects" (grupos de testes) =====
+  // ===== BLOCO C: os 4 "projects" (grupos de testes) =====
   projects: [
     // 1) setup: roda ANTES de tudo. Faz login 1 vez pela API e guarda o token.
     { name: 'setup', testMatch: /auth\.setup\.ts$/ },
@@ -48,6 +48,15 @@ export default defineConfig({
       testMatch: /api\/.*\.spec\.ts$/,
       dependencies: ['setup'],
       use: { baseURL: process.env.API_URL }, // depois usamos request.get('products'), SEM barra
+    },
+
+    // 4) rick-and-morty: desafio de mercado de API, numa pasta separada do projeto.
+    //    API pública e sem login: NÃO depende do setup, roda sozinho e rápido.
+    {
+      name: 'rick-and-morty',
+      testDir: './rick-and-morty/tests', // pasta própria, fora de ./tests
+      testMatch: /.*\.spec\.ts$/,
+      use: { baseURL: process.env.RICK_MORTY_URL ?? 'https://rickandmortyapi.com/api/' },
     },
   ],
 });
