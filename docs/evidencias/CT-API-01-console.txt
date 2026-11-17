@@ -1,0 +1,31 @@
+CT-API-01 · cria pedido (201) e baixa o estoque
+Resultado: passou em 1379 ms · execução de 15/11/2026
+
+
+▶ CT-API-01 · POST /api/orders
+  STATUS: 201 Created
+  CONTENT-TYPE: application/json; charset=utf-8
+{
+  "message": "Pedido criado com sucesso.",
+  "order": {
+    "customerId": "6abe519f384f04df16c614fa",
+    "items": [
+      {
+        "productId": "6aec92bc2fca730ea168656d",
+        "name": "Teclado Mecânico Aurora RGB",
+        "quantity": 1,
+        "unitPrice": 289.9,
+        "sellerId": "6abe51a2384f04df16c614fd",
+        "_id": "6afa25c1a582bad47a36962d"
+      }
+    ],
+    "total": 289.9,
+    "status": "pending",
+    "shippingAddress": "Av. Paulista, 1000 - Bela Vista, São Paulo/SP (CEP: 01310-100)",
+    "_id": "6afa25c1a582bad47a36962c",
+    "createdAt": "2026-11-15T21:36:01.993Z",
+    "updatedAt": "2026-11-15T21:36:01.993Z",
+    "__v": 0
+  }
+}
+  ESTOQUE de "Teclado Mecânico Aurora RGB": 99945 → 99944

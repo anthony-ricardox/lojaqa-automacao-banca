@@ -6,6 +6,10 @@
 import { defineConfig, devices } from '@playwright/test';
 import 'dotenv/config'; // lê o .env e coloca os valores em process.env
 
+// Modo evidência: EVIDENCIA=1 no .env grava vídeo, print e trace de TODOS os testes
+// (para anexar no Jira). Com 0 ou ausente, só guarda quando o teste falha.
+const EVIDENCIA = process.env.EVIDENCIA === '1';
+
 export default defineConfig({
   testDir: './tests', // onde o Playwright procura os testes
   timeout: 60_000, // cada teste pode levar até 60 s (a API no Render "acorda" devagar)
@@ -15,13 +19,13 @@ export default defineConfig({
 
   // ===== BLOCO B: o que guardar quando algo falha =====
   use: {
-    trace: 'retain-on-failure', // "filme" passo a passo, só quando falha
-    screenshot: 'only-on-failure', // print da tela, só quando falha
-    video: 'retain-on-failure', // vídeo, só quando falha
+    trace: EVIDENCIA ? 'on' : 'retain-on-failure', // "filme" passo a passo
+    screenshot: EVIDENCIA ? 'on' : 'only-on-failure', // print da tela no fim do teste
+    video: EVIDENCIA ? 'on' : 'retain-on-failure', // vídeo do teste inteiro
     launchOptions: { slowMo: Number(process.env.SLOWMO ?? 0) }, // velocidade do robô
   },
 
-  // ===== BLOCO C: os 3 "projects" (grupos de testes) =====
+  // ===== BLOCO C: os 4 "projects" (grupos de testes) =====
   projects: [
     // 1) setup: roda ANTES de tudo. Faz login 1 vez pela API e guarda o token.
     { name: 'setup', testMatch: /auth\.setup\.ts$/ },
@@ -44,6 +48,15 @@ export default defineConfig({
       testMatch: /api\/.*\.spec\.ts$/,
       dependencies: ['setup'],
       use: { baseURL: process.env.API_URL }, // depois usamos request.get('products'), SEM barra
+    },
+
+    // 4) rick-and-morty: desafio de mercado de API, numa pasta separada do projeto.
+    //    API pública e sem login: NÃO depende do setup, roda sozinho e rápido.
+    {
+      name: 'rick-and-morty',
+      testDir: './rick-and-morty/tests', // pasta própria, fora de ./tests
+      testMatch: /.*\.spec\.ts$/,
+      use: { baseURL: process.env.RICK_MORTY_URL ?? 'https://rickandmortyapi.com/api/' },
     },
   ],
 });
