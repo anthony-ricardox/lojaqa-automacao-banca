@@ -86,13 +86,13 @@
   .recibo .ok { display: inline-block; margin-top: 12px; background: #D3EEEA; color: #0E8478; padding: 6px 12px; border-radius: 8px; font-weight: 700; }
 
   /* ---------- 2. CRÍTICO ---------- */
-  .riscos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 56px; }
-  .risco { padding: 40px 38px; display: flex; flex-direction: column; gap: 18px; min-height: 560px; }
+  .riscos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 34px; }
+  .risco { padding: 28px 34px 26px; display: flex; flex-direction: column; gap: 13px; }
   .risco .n { font-family: var(--mono); font-size: 18px; color: var(--muted); letter-spacing: .1em; }
-  .risco h3 { font-family: var(--display); font-size: 36px; font-weight: 700; line-height: 1.15; }
-  .risco .prova { font-family: var(--display); font-size: 40px; font-weight: 700; line-height: 1.12; margin-top: 6px; }
-  .risco .prova .de { color: var(--muted); font-size: 26px; font-family: var(--body); font-weight: 500; display: block; margin-bottom: 6px; }
-  .risco p { font-size: 24px; color: var(--muted); line-height: 1.45; }
+  .risco h3 { font-family: var(--display); font-size: 33px; font-weight: 700; line-height: 1.15; }
+  .risco .prova { font-family: var(--display); font-size: 36px; font-weight: 700; line-height: 1.12; margin-top: 4px; }
+  .risco .prova .de { color: var(--muted); font-size: 24px; font-family: var(--body); font-weight: 500; display: block; margin-bottom: 6px; }
+  .risco p { font-size: 22px; color: var(--muted); line-height: 1.42; }
   .risco .rodape { margin-top: auto; display: flex; gap: 12px; align-items: center; font-family: var(--mono); font-size: 18px; color: var(--muted); }
   .risco.bom { border-color: rgba(63,208,138,.35); }
   .risco .vs { display: grid; grid-template-columns: 1fr auto 1fr; gap: 14px; align-items: end; margin-top: 4px; }
@@ -133,25 +133,53 @@
   .regra { display: flex; gap: 14px; align-items: baseline; font-size: 22px; }
   .regra b { font-family: var(--mono); color: var(--accent); font-size: 20px; min-width: 34px; }
 
-  /* ---------- 5. AO VIVO ---------- */
-  .vivo h1 { font-size: 96px; display: flex; align-items: center; gap: 28px; }
-  .vivo h1 .dot { width: 34px; height: 34px; border-radius: 50%; background: var(--coral); box-shadow: 0 0 0 12px rgba(255,122,110,.18); }
-  .terms { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 48px; }
-  .term { overflow: hidden; display: flex; flex-direction: column; }
-  .term .bar { display: flex; gap: 8px; padding: 16px 20px; border-bottom: 1px solid var(--line); align-items: center; }
-  .term .bar i { width: 13px; height: 13px; border-radius: 50%; background: var(--line2); }
-  .term .bar span { margin-left: auto; font-family: var(--mono); font-size: 15px; color: var(--muted); }
-  .term .corpo { padding: 26px 24px 28px; display: flex; flex-direction: column; gap: 16px; flex: 1; }
-  .term .quem { font-family: var(--mono); font-size: 16px; letter-spacing: .1em; color: var(--muted); text-transform: uppercase; }
-  .term h3 { font-family: var(--display); font-size: 30px; font-weight: 700; line-height: 1.15; min-height: 70px; }
-  .term .cmd { font-family: var(--mono); font-size: 21px; color: var(--accent); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
-  .term .cmd::before { content: "$ "; color: var(--dim); }
-  .term ul { list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 20px; color: var(--muted); line-height: 1.35; }
-  .term li::before { content: "→ "; color: var(--dim); }
-  .term li b { color: var(--ink); font-weight: 600; }
-  .modos { margin-top: 30px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
-  .modo { padding: 20px 24px; border-radius: 16px; border: 1px dashed var(--line2); font-size: 20px; color: var(--muted); line-height: 1.4; }
-  .modo b { display: block; font-family: var(--mono); color: var(--ink); font-size: 20px; margin-bottom: 4px; }
+  /* ---------- GRÁFICOS (comuns) ---------- */
+  .gtit { font-family: var(--mono); font-size: 15px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .gcab { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-bottom: 10px; }
+  .gcab b { font-family: var(--mono); font-size: 15px; color: var(--ink); font-weight: 600; }
+
+  /* ---------- 2. faixa "os 8 defeitos" ---------- */
+  .defeitos { margin-top: 26px; padding: 22px 36px 18px; display: grid; grid-template-columns: 270px 1fr 1fr; gap: 44px; align-items: center; }
+  .defeitos .total strong { display: block; font-family: var(--display); font-size: 80px; font-weight: 800; line-height: 1; color: var(--coral); }
+  .defeitos .total span { display: block; font-size: 19px; color: var(--muted); line-height: 1.35; margin-top: 8px; }
+
+  /* ---------- 3. pirâmide ---------- */
+  .piram { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); }
+
+  /* ---------- 5. AO VIVO: Loja QA (esquerda) e Rick and Morty (direita) ---------- */
+  .slide.vivo2 { padding: 0; display: grid; grid-template-columns: 1fr 1fr; }
+  .lado { position: relative; overflow: hidden; height: 1080px; }
+  .lado .fundo { position: absolute; inset: 0; }
+  .lado .fundo::after { content: ""; position: absolute; inset: 0; }
+  .loja .fundo { background: url(img/loja-vitrine.png) 0 0 / 960px auto no-repeat, #F3F1EC; }
+  .loja .fundo::after { background: linear-gradient(180deg, rgba(9,18,23,.06) 0%, rgba(9,18,23,.22) 13%, rgba(9,18,23,.84) 26%, rgba(9,18,23,.97) 34%, #091217 40%); }
+  .rm .fundo { display: grid; grid-template-columns: repeat(6, 160px); grid-auto-rows: 160px; background: #0B1A12; }
+  .rm .fundo img { width: 160px; height: 160px; object-fit: cover; display: block; }
+  .rm .fundo::after { background:
+      radial-gradient(520px 260px at 50% 12%, rgba(151,206,76,.26), transparent 70%),
+      linear-gradient(180deg, rgba(9,18,23,.06) 0%, rgba(9,18,23,.22) 13%, rgba(9,18,23,.84) 26%, rgba(9,18,23,.97) 34%, #091217 40%); }
+  .rm { border-left: 2px solid #2C4450; }
+  .conteudo { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; gap: 14px; padding: 0 60px 84px; }
+  .rotulo { align-self: flex-start; font-family: var(--mono); font-size: 16px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink); background: rgba(9,18,23,.88); border: 1px solid var(--line2); border-radius: 999px; padding: 7px 16px; }
+  .nome { font-family: var(--display); font-weight: 800; font-size: 64px; letter-spacing: -.02em; line-height: 1; margin: 4px 0 8px; }
+  .loja .nome span { color: #FF7A6E; }
+  .rm .nome span { color: #97CE4C; }
+  .demo { display: grid; grid-template-columns: 58px 1fr auto; gap: 20px; align-items: center; background: rgba(14,28,36,.94); border: 1px solid var(--line2); border-radius: 18px; padding: 16px 22px; }
+  .demo .num { width: 58px; height: 58px; border-radius: 15px; display: grid; place-items: center; font-family: var(--display); font-size: 28px; font-weight: 800; color: var(--bg); }
+  .loja .demo .num { background: #FF7A6E; }
+  .rm .demo .num { background: #97CE4C; }
+  .demo .quem { font-family: var(--mono); font-size: 15px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .demo .cmd { font-family: var(--mono); font-size: 27px; font-weight: 600; color: var(--ink); margin: 4px 0 6px; }
+  .demo .cmd::before { content: "$ "; color: var(--dim); font-weight: 400; }
+  .demo .ve { font-size: 18px; color: var(--muted); line-height: 1.35; }
+  .demo .ve b { color: var(--ink); font-weight: 600; }
+  .modo-chip { font-family: var(--mono); font-size: 14px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink); border: 1px solid var(--line2); border-radius: 999px; padding: 6px 12px; white-space: nowrap; }
+  .grafico { background: rgba(14,28,36,.94); border: 1px solid var(--line2); border-radius: 18px; padding: 16px 22px 10px; }
+  .credito { font-family: var(--mono); font-size: 13px; color: var(--dim); letter-spacing: .04em; }
+  .selo { position: absolute; top: 40px; left: 50%; transform: translateX(-50%); z-index: 2; display: flex; align-items: center; gap: 18px; background: #091217; border: 1px solid var(--line2); border-radius: 999px; padding: 14px 30px 14px 24px; font-family: var(--display); font-weight: 800; font-size: 36px; letter-spacing: .02em; box-shadow: 0 20px 50px -20px rgba(0,0,0,.8); }
+  .selo .dot { width: 22px; height: 22px; border-radius: 50%; background: var(--coral); box-shadow: 0 0 0 8px rgba(255,122,110,.2); }
+  .selo small { font-family: var(--mono); font-size: 16px; font-weight: 400; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+  .vivo2 .foot { z-index: 2; }
 
   /* ---------- 6. BUGS + PROCESSO ---------- */
   .bp { display: grid; grid-template-columns: .95fr 1.05fr; gap: 44px; margin-top: 36px; }
@@ -293,7 +321,36 @@
       <div class="rodape"><span class="tag t-api">✓ ok</span>CT-API-01 e CT-API-05 passaram</div>
     </div>
   </div>
-  <div class="faixa"><strong>8</strong><span>defeitos registrados no Jira, cada um com print, vídeo ou trecho de código · <b style="color:var(--ink)">3 de severidade alta</b></span></div>
+  <div class="card defeitos">
+    <div class="total"><strong>8</strong><span>defeitos no Jira, cada um com print, vídeo ou trecho de código</span></div>
+    <div>
+      <div class="gcab"><span class="gtit">Por severidade</span></div>
+      <!-- Barras horizontais, série única: 1 defeito = 80 px. Rótulos dizem o que cada barra é. -->
+      <svg width="560" height="124" viewBox="0 0 560 124" role="img" aria-label="Defeitos por severidade: alta 3, média 3, baixa 2">
+        <g font-family="Instrument Sans" font-size="20" fill="#E3ECEA"><text x="0" y="22">Alta</text><text x="0" y="64">Média</text><text x="0" y="106">Baixa</text></g>
+        <g fill="#FF7A6E">
+          <path d="M100 2 h236 a4 4 0 0 1 4 4 v20 a4 4 0 0 1 -4 4 h-236 z"/>
+          <path d="M100 44 h236 a4 4 0 0 1 4 4 v20 a4 4 0 0 1 -4 4 h-236 z"/>
+          <path d="M100 86 h156 a4 4 0 0 1 4 4 v20 a4 4 0 0 1 -4 4 h-156 z"/>
+        </g>
+        <g font-family="JetBrains Mono" font-size="20" font-weight="700" fill="#E3ECEA"><text x="352" y="23">3</text><text x="352" y="65">3</text><text x="272" y="107">2</text></g>
+        <g font-family="JetBrains Mono" font-size="14" fill="#93A6AC"><text x="378" y="22">BUG-01 · 06 · 07</text><text x="378" y="64">BUG-02 · 04 · 08</text><text x="298" y="106">BUG-03 · 05</text></g>
+      </svg>
+    </div>
+    <div>
+      <div class="gcab"><span class="gtit">Por camada</span></div>
+      <svg width="590" height="124" viewBox="0 0 590 124" role="img" aria-label="Defeitos por camada: checkout 4, pós-pedido 2, API e dados 2">
+        <g font-family="Instrument Sans" font-size="20" fill="#E3ECEA"><text x="0" y="22">Checkout (tela)</text><text x="0" y="64">Pós-pedido</text><text x="0" y="106">API e dados</text></g>
+        <g fill="#FF7A6E">
+          <path d="M160 2 h236 a4 4 0 0 1 4 4 v20 a4 4 0 0 1 -4 4 h-236 z"/>
+          <path d="M160 44 h116 a4 4 0 0 1 4 4 v20 a4 4 0 0 1 -4 4 h-116 z"/>
+          <path d="M160 86 h116 a4 4 0 0 1 4 4 v20 a4 4 0 0 1 -4 4 h-116 z"/>
+        </g>
+        <g font-family="JetBrains Mono" font-size="20" font-weight="700" fill="#E3ECEA"><text x="412" y="23">4</text><text x="292" y="65">2</text><text x="292" y="107">2</text></g>
+        <g font-family="JetBrains Mono" font-size="14" fill="#93A6AC"><text x="438" y="22">BUG-01 a 04</text><text x="318" y="64">BUG-05 · 06 (painel)</text><text x="318" y="106">BUG-07 · 08</text></g>
+      </svg>
+    </div>
+  </div>
   <div class="foot"><span>LQA · BANCA 06 · CHECKOUT &amp; PAGAMENTOS</span><span>2 / 7</span></div>
 </section>
 
@@ -323,39 +380,50 @@
     </table>
     <div class="card painel">
       <h4>Resultado por suíte</h4>
-      <p class="nota">Execução completa de 15/11/2026, do zero, com login novo</p>
+      <p class="nota">15/11/2026, do zero · relatório: 19 passed, 0 failed, 48,4 s</p>
       <div class="legenda"><span><i style="background:var(--pass)"></i>passou</span><span><i style="background:var(--xfail)"></i>falha esperada: bug documentado</span></div>
       <!-- Barras empilhadas: 1 unidade = 1 teste = 54 px. Cores validadas (dataviz). -->
-      <svg width="600" height="300" viewBox="0 0 600 300" role="img" aria-label="Resultado por suíte: 16 passaram e 3 falharam como esperado">
+      <svg width="600" height="252" viewBox="0 0 600 252" role="img" aria-label="Resultado por suíte: 16 passaram e 3 falharam como esperado">
         <g font-family="Instrument Sans" font-size="20" fill="#E3ECEA">
-          <text x="0" y="41">Loja E2E</text>
-          <text x="0" y="101">Loja API</text>
-          <text x="0" y="161">SauceDemo</text>
-          <text x="0" y="221">Rick and Morty</text>
-          <text x="0" y="281">Setup (login)</text>
+          <text x="0" y="23">Loja E2E</text>
+          <text x="0" y="75">Loja API</text>
+          <text x="0" y="127">SauceDemo</text>
+          <text x="0" y="179">Rick and Morty</text>
+          <text x="0" y="231">Setup (login)</text>
         </g>
         <g>
           <!-- Loja E2E: 3 + 1 -->
-          <path d="M160 20 h160 v30 h-160 z" fill="#22A396"/><path d="M322 20 h50 a4 4 0 0 1 4 4 v22 a4 4 0 0 1 -4 4 h-50 z" fill="#BB8523"/>
+          <path d="M160 4 h160 v28 h-160 z" fill="#22A396"/><path d="M322 4 h50 a4 4 0 0 1 4 4 v20 a4 4 0 0 1 -4 4 h-50 z" fill="#BB8523"/>
           <!-- Loja API: 4 + 1 -->
-          <path d="M160 80 h214 v30 h-214 z" fill="#22A396"/><path d="M376 80 h50 a4 4 0 0 1 4 4 v22 a4 4 0 0 1 -4 4 h-50 z" fill="#BB8523"/>
+          <path d="M160 56 h214 v28 h-214 z" fill="#22A396"/><path d="M376 56 h50 a4 4 0 0 1 4 4 v20 a4 4 0 0 1 -4 4 h-50 z" fill="#BB8523"/>
           <!-- SauceDemo: 1 -->
-          <path d="M160 140 h50 a4 4 0 0 1 4 4 v22 a4 4 0 0 1 -4 4 h-50 z" fill="#22A396"/>
+          <path d="M160 108 h50 a4 4 0 0 1 4 4 v20 a4 4 0 0 1 -4 4 h-50 z" fill="#22A396"/>
           <!-- Rick and Morty: 7 + 1 -->
-          <path d="M160 200 h376 v30 h-376 z" fill="#22A396"/><path d="M538 200 h50 a4 4 0 0 1 4 4 v22 a4 4 0 0 1 -4 4 h-50 z" fill="#BB8523"/>
+          <path d="M160 160 h376 v28 h-376 z" fill="#22A396"/><path d="M538 160 h50 a4 4 0 0 1 4 4 v20 a4 4 0 0 1 -4 4 h-50 z" fill="#BB8523"/>
           <!-- Setup: 1 -->
-          <path d="M160 260 h50 a4 4 0 0 1 4 4 v22 a4 4 0 0 1 -4 4 h-50 z" fill="#22A396"/>
+          <path d="M160 212 h50 a4 4 0 0 1 4 4 v20 a4 4 0 0 1 -4 4 h-50 z" fill="#22A396"/>
         </g>
         <g font-family="JetBrains Mono" font-size="18" font-weight="700" fill="#091217" text-anchor="middle">
-          <text x="240" y="41">3</text><text x="349" y="41">1</text>
-          <text x="267" y="101">4</text><text x="403" y="101">1</text>
-          <text x="187" y="161">1</text>
-          <text x="348" y="221">7</text><text x="565" y="221">1</text>
-          <text x="187" y="281">1</text>
+          <text x="240" y="24">3</text><text x="349" y="24">1</text>
+          <text x="267" y="76">4</text><text x="403" y="76">1</text>
+          <text x="187" y="128">1</text>
+          <text x="348" y="180">7</text><text x="565" y="180">1</text>
+          <text x="187" y="232">1</text>
         </g>
       </svg>
-      <div class="relat"><img src="../../docs/evidencias/relatorio-visao-geral.png" alt="Relatório HTML do Playwright: 19 passed, 0 failed"></div>
-      <div class="legend-img">Relatório HTML do Playwright · Passed 19 · Failed 0 · 48,4 s</div>
+      <div class="piram">
+        <div class="gcab"><span class="gtit">Pirâmide da suíte · tempo real de 15/11</span></div>
+        <!-- Pirâmide: base = API (13 testes), topo = tela (5 testes). Tempos somados do relatório de 15/11. -->
+        <svg width="600" height="176" viewBox="0 0 600 176" role="img" aria-label="Pirâmide: 13 testes de API em 4,5 segundos na base, 5 testes de tela em 34,5 segundos no topo">
+          <polygon points="130,2 186,74 74,74" fill="rgba(233,180,76,.16)" stroke="#E9B44C" stroke-width="2" stroke-linejoin="round"/>
+          <polygon points="71,80 189,80 258,170 2,170" fill="rgba(63,208,191,.14)" stroke="#3FD0BF" stroke-width="2" stroke-linejoin="round"/>
+          <g font-family="Unbounded" font-weight="700" text-anchor="middle" fill="#E3ECEA"><text x="130" y="64" font-size="18">5</text><text x="130" y="140" font-size="30">13</text></g>
+          <g stroke="#2C4450" stroke-dasharray="3 4"><line x1="196" y1="44" x2="282" y2="44"/><line x1="232" y1="128" x2="282" y2="128"/></g>
+          <g font-family="JetBrains Mono" font-size="14" letter-spacing="1.5"><text x="294" y="26" fill="#E9B44C">TELA · E2E</text><text x="294" y="108" fill="#3FD0BF">API</text></g>
+          <g font-family="Instrument Sans" fill="#E3ECEA" font-size="22" font-weight="600"><text x="294" y="52">5 testes · 34,5 s</text><text x="294" y="134">13 testes · 4,5 s</text></g>
+          <g font-family="Instrument Sans" fill="#93A6AC" font-size="17"><text x="294" y="74">~6,9 s por teste</text><text x="294" y="156">~0,35 s por teste: ~20x mais rápido</text></g>
+        </svg>
+      </div>
     </div>
   </div>
   <div class="foot"><span>LQA · BANCA 06 · CHECKOUT &amp; PAGAMENTOS</span><span>3 / 7</span></div>
@@ -420,33 +488,107 @@
 </section>
 
 <!-- ================= 5 · AO VIVO ================= -->
-<section class="slide vivo">
-  <div class="top"><div class="eyebrow">Demonstração</div><div class="who">Quem fala: <b>os três</b></div></div>
-  <h1><span class="dot"></span>AO VIVO</h1>
-  <div class="terms">
-    <div class="card term"><div class="bar"><i></i><i></i><i></i><span>1 · 2:30</span></div><div class="corpo">
-      <div class="quem">Anthony · tela</div><h3>Checkout da Loja QA</h3>
-      <div class="cmd">npm run test:e2e</div>
-      <ul><li>PIX: total cai <b>5%</b></li><li>API responde <b>201</b> e o pedido aparece no painel</li><li>Visa → Mastercard, <b>12 parcelas</b></li><li>Cartão incompleto <b>bloqueado</b></li><li>Vencido: <b>BUG-01</b> documentado</li></ul></div></div>
-    <div class="card term"><div class="bar"><i></i><i></i><i></i><span>2 · 2:00</span></div><div class="corpo">
-      <div class="quem">André · API</div><h3>POST /orders no console</h3>
-      <div class="cmd">npm run test:api:ui</div>
-      <ul><li><b>201</b> e estoque <b>−1</b></li><li><b>400</b> sem itens · quantidade 0</li><li><b>409</b> acima do estoque</li><li><b>BUG-08</b>: 403 onde o contrato diz 401</li></ul></div></div>
-    <div class="card term"><div class="bar"><i></i><i></i><i></i><span>3 · 0:50</span></div><div class="corpo">
-      <div class="quem">Rodrigo · mercado E2E</div><h3>SauceDemo</h3>
-      <div class="cmd">npm run test:sauce</div>
-      <ul><li>Login → mochila → checkout</li><li>Total = itens <b>+</b> imposto</li><li><b>"Thank you for your order!"</b></li></ul></div></div>
-    <div class="card term"><div class="bar"><i></i><i></i><i></i><span>4 · 0:55</span></div><div class="corpo">
-      <div class="quem">Anthony · mercado API</div><h3>Rick and Morty API</h3>
-      <div class="cmd">npm run test:rm:ui</div>
-      <ul><li>Rick: <b>200</b> + contrato</li><li>Filtros e paginação</li><li>Encadeia: 1º episódio = <b>Pilot</b></li><li><b>404</b> tratado · achado: <b>500</b></li></ul></div></div>
+<section class="slide vivo2">
+  <div class="selo"><span class="dot"></span>AO VIVO <small>os três</small></div>
+
+  <!-- Esquerda: Loja QA. Fundo = vitrine real, aberta já logada pela nossa fixture. -->
+  <div class="lado loja">
+    <div class="fundo"></div>
+    <div class="conteudo">
+      <div class="rotulo">Demos 1 e 2 · nosso módulo</div>
+      <div class="nome">Loja<span>QA</span></div>
+      <div class="demo"><div class="num">1</div><div>
+        <div class="quem">Anthony · tela · 2:30</div><div class="cmd">npm run test:e2e</div>
+        <div class="ve">PIX <b>−5%</b> · API <b>201</b> + painel · <b>12 parcelas</b> · incompleto bloqueado · <b>BUG-01</b></div></div>
+        <div class="modo-chip">na tela</div></div>
+      <div class="demo"><div class="num">2</div><div>
+        <div class="quem">André · API · 2:00</div><div class="cmd">npm run test:api:ui</div>
+        <div class="ve"><b>201</b> e estoque <b>−1</b> · <b>400</b> · <b>409</b> · <b>BUG-08</b>: 403 onde devia ser 401</div></div>
+        <div class="modo-chip">UI Mode</div></div>
+      <div class="grafico">
+        <div class="gcab"><span class="gtit">Tempo de cada caso (s) · 15/11</span><b>tela ~7 s · API &lt; 1,5 s</b></div>
+        <!-- Colunas, série única: 12 px por segundo. Dados do relatório de 15/11. -->
+        <svg width="796" height="178" viewBox="0 0 796 178" role="img" aria-label="Tempo de cada caso: CT-E2E 01 a 04 entre 6,6 e 8,1 segundos; CT-API 01 a 05 entre 0,4 e 1,4 segundo">
+          <g stroke="#22343D"><line x1="20" x2="756" y1="72" y2="72" stroke-dasharray="3 5"/><line x1="20" x2="756" y1="132" y2="132"/></g>
+          <text x="764" y="76" font-family="JetBrains Mono" font-size="13" fill="#6B8188">5 s</text>
+          <g fill="#8FB3C2">
+            <path d="M30 132 V38.3 a4 4 0 0 1 4 -4 h46 a4 4 0 0 1 4 4 V132 z"/>
+            <path d="M106 132 V55.4 a4 4 0 0 1 4 -4 h46 a4 4 0 0 1 4 4 V132 z"/>
+            <path d="M182 132 V56.8 a4 4 0 0 1 4 -4 h46 a4 4 0 0 1 4 4 V132 z"/>
+            <path d="M258 132 V53.6 a4 4 0 0 1 4 -4 h46 a4 4 0 0 1 4 4 V132 z"/>
+            <path d="M382 132 V119.5 a4 4 0 0 1 4 -4 h46 a4 4 0 0 1 4 4 V132 z"/>
+            <path d="M458 132 V125.3 a4 4 0 0 1 4 -4 h46 a4 4 0 0 1 4 4 V132 z"/>
+            <path d="M534 132 V128.7 a4 4 0 0 1 4 -4 h46 a4 4 0 0 1 4 4 V132 z"/>
+            <path d="M610 132 V130.7 a4 4 0 0 1 4 -4 h46 a4 4 0 0 1 4 4 V132 z"/>
+            <path d="M686 132 V130.9 a4 4 0 0 1 4 -4 h46 a4 4 0 0 1 4 4 V132 z"/>
+          </g>
+          <g font-family="JetBrains Mono" font-size="15" font-weight="600" fill="#E3ECEA" text-anchor="middle">
+            <text x="57" y="26">8,1</text><text x="133" y="43">6,7</text><text x="209" y="45">6,6</text><text x="285" y="42">6,9</text>
+            <text x="409" y="108">1,4</text><text x="485" y="114">0,9</text><text x="561" y="117">0,6</text><text x="637" y="119">0,4</text><text x="713" y="119">0,4</text>
+          </g>
+          <g font-family="JetBrains Mono" font-size="13" font-weight="600" fill="#FF7A6E" text-anchor="middle"><text x="285" y="22">BUG-01</text><text x="637" y="101">BUG-08</text></g>
+          <g font-family="JetBrains Mono" font-size="14" fill="#93A6AC" text-anchor="middle">
+            <text x="57" y="152">01</text><text x="133" y="152">02</text><text x="209" y="152">03</text><text x="285" y="152">04</text>
+            <text x="409" y="152">01</text><text x="485" y="152">02</text><text x="561" y="152">03</text><text x="637" y="152">04</text><text x="713" y="152">05</text>
+          </g>
+          <g font-family="Instrument Sans" font-size="16" fill="#E3ECEA" text-anchor="middle"><text x="171" y="174">CT-E2E · tela</text><text x="561" y="174">CT-API · sem navegador</text></g>
+        </svg>
+      </div>
+      <div class="credito">Fundo: vitrine real da Loja QA, aberta já logada pela nossa fixture</div>
+    </div>
   </div>
-  <div class="modos">
-    <div class="modo"><b>--headed</b>demonstrar: o robô na tela, com SLOWMO=400</div>
-    <div class="modo"><b>--ui</b>explicar: linha do tempo, DOM e cada requisição</div>
-    <div class="modo"><b>--debug</b>investigar: pausa antes de cada ação</div>
-    <div class="modo"><b>npm run report</b>plano B: relatório com vídeo e trace</div>
+
+  <!-- Direita: Rick and Morty. Fundo = os 20 personagens da página 1 de GET /character, servidos pela própria API. -->
+  <div class="lado rm">
+    <div class="fundo">
+      <img src="img/rick-and-morty/1.jpeg" alt=""><img src="img/rick-and-morty/2.jpeg" alt=""><img src="img/rick-and-morty/3.jpeg" alt=""><img src="img/rick-and-morty/4.jpeg" alt=""><img src="img/rick-and-morty/5.jpeg" alt="">
+      <img src="img/rick-and-morty/6.jpeg" alt=""><img src="img/rick-and-morty/7.jpeg" alt=""><img src="img/rick-and-morty/8.jpeg" alt=""><img src="img/rick-and-morty/9.jpeg" alt=""><img src="img/rick-and-morty/10.jpeg" alt="">
+      <img src="img/rick-and-morty/11.jpeg" alt=""><img src="img/rick-and-morty/12.jpeg" alt=""><img src="img/rick-and-morty/13.jpeg" alt=""><img src="img/rick-and-morty/14.jpeg" alt=""><img src="img/rick-and-morty/15.jpeg" alt="">
+      <img src="img/rick-and-morty/16.jpeg" alt=""><img src="img/rick-and-morty/17.jpeg" alt=""><img src="img/rick-and-morty/18.jpeg" alt=""><img src="img/rick-and-morty/19.jpeg" alt=""><img src="img/rick-and-morty/20.jpeg" alt="">
+    </div>
+    <div class="conteudo">
+      <div class="rotulo">Demos 3 e 4 · desafio de mercado</div>
+      <div class="nome">Rick and Morty <span>API</span></div>
+      <div class="demo"><div class="num">3</div><div>
+        <div class="quem">Rodrigo · SauceDemo · 0:50</div><div class="cmd">npm run test:sauce</div>
+        <div class="ve">login → mochila → checkout · total <b>$32.39</b> · <b>Thank you for your order!</b></div></div>
+        <div class="modo-chip">na tela</div></div>
+      <div class="demo"><div class="num">4</div><div>
+        <div class="quem">Anthony · API pública · 0:55</div><div class="cmd">npm run test:rm:ui</div>
+        <div class="ve"><b>200</b> + contrato · filtros · paginação · encadeia → <b>Pilot</b> · <b>404</b> · achado: <b>500</b></div></div>
+        <div class="modo-chip">UI Mode</div></div>
+      <div class="grafico">
+        <div class="gcab"><span class="gtit">Tempo de cada caso (ms) · 15/11</span><b>8 casos em 0,8 s</b></div>
+        <!-- Colunas, série única: 0,5 px por ms. Dados do relatório de 15/11. -->
+        <svg width="796" height="178" viewBox="0 0 796 178" role="img" aria-label="Tempo de cada caso do Rick and Morty: de 64 a 173 milissegundos">
+          <g stroke="#22343D"><line x1="20" x2="716" y1="32" y2="32" stroke-dasharray="3 5"/><line x1="20" x2="716" y1="82" y2="82" stroke-dasharray="3 5"/><line x1="20" x2="716" y1="132" y2="132"/></g>
+          <g font-family="JetBrains Mono" font-size="13" fill="#6B8188"><text x="726" y="36">200 ms</text><text x="726" y="86">100 ms</text></g>
+          <g fill="#8FB3C2">
+            <path d="M30 132 V49.5 a4 4 0 0 1 4 -4 h48 a4 4 0 0 1 4 4 V132 z"/>
+            <path d="M114 132 V61 a4 4 0 0 1 4 -4 h48 a4 4 0 0 1 4 4 V132 z"/>
+            <path d="M198 132 V101 a4 4 0 0 1 4 -4 h48 a4 4 0 0 1 4 4 V132 z"/>
+            <path d="M282 132 V95.5 a4 4 0 0 1 4 -4 h48 a4 4 0 0 1 4 4 V132 z"/>
+            <path d="M366 132 V104 a4 4 0 0 1 4 -4 h48 a4 4 0 0 1 4 4 V132 z"/>
+            <path d="M470 132 V89.5 a4 4 0 0 1 4 -4 h48 a4 4 0 0 1 4 4 V132 z"/>
+            <path d="M554 132 V100.5 a4 4 0 0 1 4 -4 h48 a4 4 0 0 1 4 4 V132 z"/>
+            <path d="M638 132 V95.5 a4 4 0 0 1 4 -4 h48 a4 4 0 0 1 4 4 V132 z"/>
+          </g>
+          <g font-family="JetBrains Mono" font-size="15" font-weight="600" fill="#E3ECEA" text-anchor="middle">
+            <text x="58" y="37">173</text><text x="142" y="49">150</text><text x="226" y="89">70</text><text x="310" y="83">81</text><text x="394" y="92">64</text>
+            <text x="498" y="77">93</text><text x="582" y="88">71</text><text x="666" y="83">81</text>
+          </g>
+          <text x="666" y="64" font-family="JetBrains Mono" font-size="13" font-weight="600" fill="#FF7A6E" text-anchor="middle">achado: 500</text>
+          <g font-family="JetBrains Mono" font-size="14" fill="#93A6AC" text-anchor="middle">
+            <text x="58" y="152">02.1</text><text x="142" y="152">02.2</text><text x="226" y="152">02.3</text><text x="310" y="152">02.4</text><text x="394" y="152">02.5</text>
+            <text x="498" y="152">02.6</text><text x="582" y="152">02.7</text><text x="666" y="152">02.8</text>
+          </g>
+          <g font-family="Instrument Sans" font-size="16" fill="#E3ECEA" text-anchor="middle"><text x="226" y="174">positivos</text><text x="582" y="174">negativos</text></g>
+        </svg>
+      </div>
+      <div class="credito">Fundo: os 20 personagens de GET /character, imagens da própria API · © Adult Swim</div>
+    </div>
   </div>
+
   <div class="foot"><span>LQA · BANCA 06 · CHECKOUT &amp; PAGAMENTOS</span><span>5 / 7</span></div>
 </section>
 
