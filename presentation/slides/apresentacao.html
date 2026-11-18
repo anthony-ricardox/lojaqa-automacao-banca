@@ -146,28 +146,31 @@
   /* ---------- 3. pirâmide ---------- */
   .piram { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); }
 
-  /* ---------- 5. AO VIVO: Loja QA (esquerda) e Rick and Morty (direita) ---------- */
+  /* ---------- 5. AO VIVO: Loja QA (esquerda) · SauceDemo e Rick and Morty (direita) ---------- */
   .slide.vivo2 { padding: 0; display: grid; grid-template-columns: 1fr 1fr; }
   .lado { position: relative; overflow: hidden; height: 1080px; }
   .lado .fundo { position: absolute; inset: 0; }
-  .lado .fundo::after { content: ""; position: absolute; inset: 0; }
+  /* Véu escuro: o topo fica limpo (dá para ver o sistema real) e escurece só onde o texto começa. */
+  .lado .fundo::after { content: ""; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(9,18,23,0) 0%, rgba(9,18,23,.04) 20%, rgba(9,18,23,.80) 28%, rgba(9,18,23,.95) 35%, #091217 42%); }
   .loja .fundo { background: url(img/loja-vitrine.png) 0 0 / 960px auto no-repeat, #F3F1EC; }
-  .loja .fundo::after { background: linear-gradient(180deg, rgba(9,18,23,.06) 0%, rgba(9,18,23,.22) 13%, rgba(9,18,23,.84) 26%, rgba(9,18,23,.97) 34%, #091217 40%); }
-  .rm .fundo { display: grid; grid-template-columns: repeat(6, 160px); grid-auto-rows: 160px; background: #0B1A12; }
-  .rm .fundo img { width: 160px; height: 160px; object-fit: cover; display: block; }
-  .rm .fundo::after { background:
-      radial-gradient(520px 260px at 50% 12%, rgba(151,206,76,.26), transparent 70%),
-      linear-gradient(180deg, rgba(9,18,23,.06) 0%, rgba(9,18,23,.22) 13%, rgba(9,18,23,.84) 26%, rgba(9,18,23,.97) 34%, #091217 40%); }
+  .rm .fundo { display: grid; grid-template-columns: 480px 480px; background: #0B1A12; }
+  .rm .sauce { background: url(img/saucedemo.png) 0 0 / 480px auto no-repeat, #fff; border-right: 2px solid #2C4450; }
+  .rm .personagens { display: grid; grid-template-columns: repeat(3, 160px); grid-auto-rows: 160px; align-content: start; }
+  .rm .personagens img { width: 160px; height: 160px; object-fit: cover; display: block; }
   .rm { border-left: 2px solid #2C4450; }
   .conteudo { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; gap: 14px; padding: 0 60px 84px; }
   .rotulo { align-self: flex-start; font-family: var(--mono); font-size: 16px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink); background: rgba(9,18,23,.88); border: 1px solid var(--line2); border-radius: 999px; padding: 7px 16px; }
   .nome { font-family: var(--display); font-weight: 800; font-size: 64px; letter-spacing: -.02em; line-height: 1; margin: 4px 0 8px; }
-  .loja .nome span { color: #FF7A6E; }
+  .loja .nome span { color: #F2A196; }
+  .rm .nome { font-size: 44px; line-height: 64px; white-space: nowrap; }
   .rm .nome span { color: #97CE4C; }
+  .rm .nome i { font-style: normal; color: var(--dim); }
   .demo { display: grid; grid-template-columns: 58px 1fr auto; gap: 20px; align-items: center; background: rgba(14,28,36,.94); border: 1px solid var(--line2); border-radius: 18px; padding: 16px 22px; }
-  .demo .num { width: 58px; height: 58px; border-radius: 15px; display: grid; place-items: center; font-family: var(--display); font-size: 28px; font-weight: 800; color: var(--bg); }
-  .loja .demo .num { background: #FF7A6E; }
-  .rm .demo .num { background: #97CE4C; }
+  /* Número da demo: só um tom de fundo e o número colorido (antes era um bloco de cor sólida). */
+  .demo .num { width: 58px; height: 58px; border-radius: 15px; display: grid; place-items: center; font-family: var(--display); font-size: 28px; font-weight: 800; }
+  .loja .demo .num { background: rgba(255,122,110,.12); color: #F2A196; box-shadow: inset 0 0 0 1.5px rgba(242,161,150,.45); }
+  .rm .demo .num { background: rgba(151,206,76,.12); color: #B2DB7A; box-shadow: inset 0 0 0 1.5px rgba(151,206,76,.45); }
   .demo .quem { font-family: var(--mono); font-size: 15px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
   .demo .cmd { font-family: var(--mono); font-size: 27px; font-weight: 600; color: var(--ink); margin: 4px 0 6px; }
   .demo .cmd::before { content: "$ "; color: var(--dim); font-weight: 400; }
@@ -538,17 +541,20 @@
     </div>
   </div>
 
-  <!-- Direita: Rick and Morty. Fundo = os 20 personagens da página 1 de GET /character, servidos pela própria API. -->
+  <!-- Direita: desafio de mercado. Fundo = SauceDemo logado (a mochila do CT-EXT-01) e os personagens de GET /character, servidos pela própria API. -->
   <div class="lado rm">
     <div class="fundo">
-      <img src="img/rick-and-morty/1.jpeg" alt=""><img src="img/rick-and-morty/2.jpeg" alt=""><img src="img/rick-and-morty/3.jpeg" alt=""><img src="img/rick-and-morty/4.jpeg" alt=""><img src="img/rick-and-morty/5.jpeg" alt="">
-      <img src="img/rick-and-morty/6.jpeg" alt=""><img src="img/rick-and-morty/7.jpeg" alt=""><img src="img/rick-and-morty/8.jpeg" alt=""><img src="img/rick-and-morty/9.jpeg" alt=""><img src="img/rick-and-morty/10.jpeg" alt="">
-      <img src="img/rick-and-morty/11.jpeg" alt=""><img src="img/rick-and-morty/12.jpeg" alt=""><img src="img/rick-and-morty/13.jpeg" alt=""><img src="img/rick-and-morty/14.jpeg" alt=""><img src="img/rick-and-morty/15.jpeg" alt="">
-      <img src="img/rick-and-morty/16.jpeg" alt=""><img src="img/rick-and-morty/17.jpeg" alt=""><img src="img/rick-and-morty/18.jpeg" alt=""><img src="img/rick-and-morty/19.jpeg" alt=""><img src="img/rick-and-morty/20.jpeg" alt="">
+      <div class="sauce"></div>
+      <div class="personagens">
+        <img src="img/rick-and-morty/1.jpeg" alt=""><img src="img/rick-and-morty/2.jpeg" alt=""><img src="img/rick-and-morty/3.jpeg" alt="">
+        <img src="img/rick-and-morty/4.jpeg" alt=""><img src="img/rick-and-morty/5.jpeg" alt=""><img src="img/rick-and-morty/6.jpeg" alt="">
+        <img src="img/rick-and-morty/7.jpeg" alt=""><img src="img/rick-and-morty/8.jpeg" alt=""><img src="img/rick-and-morty/9.jpeg" alt="">
+        <img src="img/rick-and-morty/10.jpeg" alt=""><img src="img/rick-and-morty/11.jpeg" alt=""><img src="img/rick-and-morty/12.jpeg" alt="">
+      </div>
     </div>
     <div class="conteudo">
       <div class="rotulo">Demos 3 e 4 · desafio de mercado</div>
-      <div class="nome">Rick and Morty <span>API</span></div>
+      <div class="nome">SauceDemo <i>+</i> <span>Rick and Morty</span></div>
       <div class="demo"><div class="num">3</div><div>
         <div class="quem">Rodrigo · SauceDemo · 0:50</div><div class="cmd">npm run test:sauce</div>
         <div class="ve">login → mochila → checkout · total <b>$32.39</b> · <b>Thank you for your order!</b></div></div>
@@ -585,7 +591,7 @@
           <g font-family="Instrument Sans" font-size="16" fill="#E3ECEA" text-anchor="middle"><text x="226" y="174">positivos</text><text x="582" y="174">negativos</text></g>
         </svg>
       </div>
-      <div class="credito">Fundo: os 20 personagens de GET /character, imagens da própria API · © Adult Swim</div>
+      <div class="credito">Fundo: SauceDemo logado, com a mochila do teste · personagens de GET /character · © Adult Swim</div>
     </div>
   </div>
 
