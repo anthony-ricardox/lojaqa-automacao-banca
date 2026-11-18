@@ -554,11 +554,11 @@
         <div class="ve">login → mochila → checkout · total <b>$32.39</b> · <b>Thank you for your order!</b></div></div>
         <div class="modo-chip">na tela</div></div>
       <div class="demo"><div class="num">4</div><div>
-        <div class="quem">Anthony · API pública · 0:55</div><div class="cmd">npm run test:rm:ui</div>
-        <div class="ve"><b>200</b> + contrato · filtros · paginação · encadeia → <b>Pilot</b> · <b>404</b> · achado: <b>500</b></div></div>
-        <div class="modo-chip">UI Mode</div></div>
+        <div class="quem">Anthony · API pública · 0:55</div><div class="cmd">npm run test:rm:vitrine</div>
+        <div class="ve">cada resposta vira card: <b>foto</b>, status e JSON · <b>Pilot</b> · <b>404</b> · achado: <b>500</b></div></div>
+        <div class="modo-chip">vitrine</div></div>
       <div class="grafico">
-        <div class="gcab"><span class="gtit">Tempo de cada caso (ms) · 15/11</span><b>8 casos em 0,8 s</b></div>
+        <div class="gcab"><span class="gtit">Tempo de cada caso (ms) · só a API · 15/11</span><b>8 casos em 0,8 s</b></div>
         <!-- Colunas, série única: 0,5 px por ms. Dados do relatório de 15/11. -->
         <svg width="796" height="178" viewBox="0 0 796 178" role="img" aria-label="Tempo de cada caso do Rick and Morty: de 64 a 173 milissegundos">
           <g stroke="#22343D"><line x1="20" x2="716" y1="32" y2="32" stroke-dasharray="3 5"/><line x1="20" x2="716" y1="82" y2="82" stroke-dasharray="3 5"/><line x1="20" x2="716" y1="132" y2="132"/></g>
@@ -709,14 +709,16 @@
     <div style="display:flex;flex-direction:column;gap:22px">
       <div class="card bloco"><h4>Pasta própria, mesma arquitetura</h4><pre><b>rick-and-morty/</b>
 ├─ api/RickAndMortyApi.ts   <span style="color:#6B8188">API Object</span>
-├─ fixtures/                <span style="color:#6B8188">entrega { rickApi }</span>
+├─ fixtures/                <span style="color:#6B8188">entrega { rickApi, vitrine }</span>
+├─ vitrine/Vitrine.ts       <span style="color:#6B8188">tela das respostas</span>
 ├─ data/                    <span style="color:#6B8188">massa de dados</span>
 ├─ tests/                   <span style="color:#6B8188">CT-EXT-02.1 a 02.8</span>
 └─ README.md                <span style="color:#6B8188">documentação</span></pre></div>
-      <div class="card bloco"><h4>O que aparece no console</h4><pre>▶ CT-EXT-02.8 · personagem "abc"
+      <div class="card bloco"><h4>No console e na vitrine</h4><pre>▶ CT-EXT-02.8 · personagem "abc"
   GET …/api/character/abc
   STATUS: <span class="e">500 Internal Server Error</span>
-{ "error": "Hey! you must provide an id" }</pre></div>
+{ "error": "Hey! you must provide an id" }
+<b>vitrine:</b> <span class="e">✗ esperado 400, veio 500</span></pre></div>
     </div>
   </div>
   <div class="foot"><span>LQA · BANCA 06 · ANEXOS</span><span>B</span></div>
@@ -738,20 +740,23 @@
         <tr><td>npm run test:api:ui</td><td class="m">API no UI Mode (aba de rede)</td></tr>
         <tr><td>npm run test:sauce</td><td class="m">SauceDemo na tela</td></tr>
         <tr><td>npm run test:rm</td><td class="m">Rick and Morty no terminal</td></tr>
-        <tr><td>npm run test:rm:ui</td><td class="m">Rick and Morty no UI Mode</td></tr>
+        <tr><td>npm run test:rm:ui</td><td class="m">Rick and Morty no UI Mode, com a vitrine</td></tr>
+        <tr><td>npm run test:rm:vitrine</td><td class="m">Cards com foto, status e JSON; a janela fica aberta</td></tr>
         <tr><td>npm run report</td><td class="m">Relatório HTML com vídeo e trace</td></tr>
       </tbody>
     </table>
     <div style="display:flex;flex-direction:column;gap:22px">
       <div class="card bloco"><h4>Recomendação para a banca</h4><pre><b>Tela:</b> npm run test:e2e com SLOWMO=400
   a plateia vê cada campo sendo preenchido
-<b>API:</b> npm run test:api:ui e test:rm:ui
+<b>API:</b> npm run test:api:ui
   clique no teste e mostre a requisição e a resposta
+<b>Rick and Morty:</b> npm run test:rm:vitrine
+  cards um a um; depois clique no 02.4 e no 02.8
 <b>Evite:</b> --debug ao vivo
   ele espera um clique a cada passo
 <b>Plano B:</b> npm run report já aberto</pre></div>
       <div class="card bloco"><h4>Dia da banca</h4><pre><b>07h30</b> abrir /api/health (acorda o Render)
-<b>07h45</b> npm test uma vez (gera o token)
+<b>07h45</b> npm test uma vez (token + fotos em cache)
 <b>08h15</b> zoom 150%, SLOWMO=400, relatório aberto
 <b>429?</b>  mais de 5 logins: esperar 15 min</pre></div>
     </div>
@@ -771,7 +776,7 @@
       <div class="passo vivo"><span class="t">4:30–7:00</span><span>AO VIVO 1 · npm run test:e2e</span><span class="q">Anthony</span></div>
       <div class="passo vivo"><span class="t">7:00–9:00</span><span>AO VIVO 2 · npm run test:api:ui</span><span class="q">André</span></div>
       <div class="passo vivo"><span class="t">9:00–9:50</span><span>AO VIVO 3 · npm run test:sauce</span><span class="q">Rodrigo</span></div>
-      <div class="passo vivo"><span class="t">9:50–10:45</span><span>AO VIVO 4 · npm run test:rm:ui</span><span class="q">Anthony</span></div>
+      <div class="passo vivo"><span class="t">9:50–10:45</span><span>AO VIVO 4 · npm run test:rm:vitrine</span><span class="q">Anthony</span></div>
       <div class="passo"><span class="t">10:45–11:15</span><span>Slide 6 · defeitos e processo</span><span class="q">Rodrigo</span></div>
       <div class="passo"><span class="t">11:15–12:00</span><span>Slide 7 · uma lição de cada um</span><span class="q">os três</span></div>
     </div>
@@ -783,6 +788,7 @@
         <tr><td style="white-space:normal">O que é test.fail?</td><td class="m">Bug conhecido escrito como teste: falha esperada, avisa quando corrigirem</td></tr>
         <tr><td style="white-space:normal">Como evitam esperas fixas?</td><td class="m">waitForResponse, waitForURL e expect com repetição</td></tr>
         <tr><td style="white-space:normal">Por que 403 é bug?</td><td class="m">Sem credencial é 401; 403 é para quem se identificou sem permissão</td></tr>
+        <tr><td style="white-space:normal">Teste de API abre navegador?</td><td class="m">A vitrine só mostra as respostas; quem decide é o expect. VITRINE=0 desliga</td></tr>
       </tbody>
     </table>
   </div>
