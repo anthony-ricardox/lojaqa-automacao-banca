@@ -1,8 +1,8 @@
 // rick-and-morty/tests/rick-and-morty.spec.ts — Desafio de mercado API: Rick and Morty API (CT-EXT-02).
 // API pública, sem token: https://rickandmortyapi.com/api
-// Cada chamada imprime no console o endereço, o STATUS, o CONTENT-TYPE e o JSON, para a banca acompanhar.
-// Rodar: npm run test:rm      (ou npm run test:rm:ui para ver cada requisição na interface)
-import { APIResponse } from '@playwright/test';
+// Cada chamada passa pela vitrine: imprime no console o endereço, o STATUS, o CONTENT-TYPE e o JSON,
+// e mostra um card com as fotos na tela do UI Mode (ou na janela, com --headed). Quem valida é o expect.
+// Rodar: npm run test:rm  ·  npm run test:rm:ui (UI Mode)  ·  npm run test:rm:vitrine (janela ao vivo)
 import { test, expect } from '../fixtures/rick-and-morty.fixture';
 import type { Episodio, ErroApi, Pagina, Personagem } from '../api/RickAndMortyApi';
 import {
@@ -18,20 +18,16 @@ import {
   TAMANHO_PAGINA,
 } from '../data/rick-and-morty.data';
 
-// Imprime a chamada para a banca. "resumo" encurta respostas grandes (ex.: 51 links de episódios).
-async function log(nome: string, res: APIResponse, resumo?: unknown) {
-  console.log(`\n▶ ${nome}`);
-  console.log(`  GET ${res.url()}`);
-  console.log(`  STATUS: ${res.status()} ${res.statusText()} · CONTENT-TYPE: ${res.headers()['content-type']}`);
-  console.log(JSON.stringify(resumo ?? (await res.json()), null, 2));
-}
-
 // SCRUM-24 · US-04
+// "esperado" e "resumo" só mudam o que a vitrine mostra; quem decide se passou são os expects.
 test.describe('CT-EXT-02 · Rick and Morty API', () => {
-  test('CT-EXT-02.1 · busca o Rick pelo id (200) e valida o contrato', async ({ rickApi }) => {
+  test('CT-EXT-02.1 · busca o Rick pelo id (200) e valida o contrato', async ({ rickApi, vitrine }) => {
     const res = await rickApi.personagem(RICK.id);
     const rick: Personagem = await res.json();
-    await log('CT-EXT-02.1 · personagem 1', res, { ...rick, episode: `[${rick.episode.length} episódios]` });
+    await vitrine.mostrar('CT-EXT-02.1 · personagem 1', res, {
+      esperado: 200,
+      resumo: { ...rick, episode: `[${rick.episode.length} episódios]` },
+    });
 
     expect(res.status()).toBe(200);
     expect(res.headers()['content-type']).toContain('application/json');
@@ -51,12 +47,12 @@ test.describe('CT-EXT-02 · Rick and Morty API', () => {
     expect(rick.episode.length).toBeGreaterThan(0);
   });
 
-  test('CT-EXT-02.2 · filtro por nome e status devolve só Ricks vivos', async ({ rickApi }) => {
+  test('CT-EXT-02.2 · filtro por nome e status devolve só Ricks vivos', async ({ rickApi, vitrine }) => {
     const res = await rickApi.buscarPersonagens(FILTRO_RICKS_VIVOS);
     const pagina: Pagina<Personagem> = await res.json();
-    await log('CT-EXT-02.2 · ?name=rick&status=alive', res, {
-      info: pagina.info,
-      results: pagina.results.map((p) => `${p.id} · ${p.name} (${p.status})`),
+    await vitrine.mostrar('CT-EXT-02.2 · ?name=rick&status=alive', res, {
+      esperado: 200,
+      resumo: { info: pagina.info, results: pagina.results.map((p) => `${p.id} · ${p.name} (${p.status})`) },
     });
 
     expect(res.status()).toBe(200);
@@ -69,10 +65,13 @@ test.describe('CT-EXT-02 · Rick and Morty API', () => {
     }
   });
 
-  test('CT-EXT-02.3 · paginação: a página 2 traz os ids 21 a 40', async ({ rickApi }) => {
+  test('CT-EXT-02.3 · paginação: a página 2 traz os ids 21 a 40', async ({ rickApi, vitrine }) => {
     const res = await rickApi.buscarPersonagens({ page: PAGINA_2.numero });
     const pagina: Pagina<Personagem> = await res.json();
-    await log('CT-EXT-02.3 · ?page=2', res, { info: pagina.info, ids: pagina.results.map((p) => p.id) });
+    await vitrine.mostrar('CT-EXT-02.3 · ?page=2', res, {
+      esperado: 200,
+      resumo: { info: pagina.info, ids: pagina.results.map((p) => p.id) },
+    });
 
     expect(res.status()).toBe(200);
     expect(pagina.results).toHaveLength(TAMANHO_PAGINA);
@@ -83,15 +82,15 @@ test.describe('CT-EXT-02 · Rick and Morty API', () => {
     expect(pagina.info.next).toContain('page=3');
   });
 
-  test('CT-EXT-02.4 · encadeia chamadas: o 1º episódio do Rick é o Pilot', async ({ rickApi }) => {
+  test('CT-EXT-02.4 · encadeia chamadas: o 1º episódio do Rick é o Pilot', async ({ rickApi, vitrine }) => {
     // 1ª chamada: o personagem traz os links dos episódios
     const rick: Personagem = await (await rickApi.personagem(RICK.id)).json();
     // 2ª chamada: segue o primeiro link que a própria API devolveu
     const res = await rickApi.seguir(rick.episode[0]);
     const episodio: Episodio = await res.json();
-    await log('CT-EXT-02.4 · seguindo o link do 1º episódio do Rick', res, {
-      ...episodio,
-      characters: `[${episodio.characters.length} personagens]`,
+    await vitrine.mostrar('CT-EXT-02.4 · seguindo o link do 1º episódio do Rick', res, {
+      esperado: 200,
+      resumo: { ...episodio, characters: `[${episodio.characters.length} personagens]` },
     });
 
     expect(res.status()).toBe(200);
@@ -99,39 +98,42 @@ test.describe('CT-EXT-02 · Rick and Morty API', () => {
     expect(episodio.characters, 'o Rick tem de aparecer no próprio episódio').toContain(rick.url);
   });
 
-  test('CT-EXT-02.5 · vários ids numa chamada devolvem a família Smith', async ({ rickApi }) => {
+  test('CT-EXT-02.5 · vários ids numa chamada devolvem a família Smith', async ({ rickApi, vitrine }) => {
     const res = await rickApi.variosPersonagens(FAMILIA_SMITH.map((p) => p.id));
     const lista: Personagem[] = await res.json();
-    await log('CT-EXT-02.5 · personagens 1,2,3', res, lista.map((p) => ({ id: p.id, name: p.name })));
+    await vitrine.mostrar('CT-EXT-02.5 · personagens 1,2,3', res, {
+      esperado: 200,
+      resumo: lista.map((p) => ({ id: p.id, name: p.name })),
+    });
 
     expect(res.status()).toBe(200);
     expect(Array.isArray(lista)).toBe(true);
     expect(lista.map((p) => ({ id: p.id, name: p.name }))).toEqual(FAMILIA_SMITH);
   });
 
-  test('CT-EXT-02.6 · id inexistente retorna 404', async ({ rickApi }) => {
+  test('CT-EXT-02.6 · id inexistente retorna 404', async ({ rickApi, vitrine }) => {
     const res = await rickApi.personagem(ID_INEXISTENTE);
-    await log('CT-EXT-02.6 · personagem 999999', res);
+    await vitrine.mostrar('CT-EXT-02.6 · personagem 999999', res, { esperado: 404 });
 
     expect(res.status()).toBe(404);
     expect(res.headers()['content-type']).toContain('application/json');
     expect(((await res.json()) as ErroApi).error).toBe(MENSAGENS.personagemNaoEncontrado);
   });
 
-  test('CT-EXT-02.7 · busca sem resultado retorna 404', async ({ rickApi }) => {
+  test('CT-EXT-02.7 · busca sem resultado retorna 404', async ({ rickApi, vitrine }) => {
     const res = await rickApi.buscarPersonagens({ name: NOME_INEXISTENTE });
-    await log('CT-EXT-02.7 · ?name=zzzzzz', res);
+    await vitrine.mostrar('CT-EXT-02.7 · ?name=zzzzzz', res, { esperado: 404 });
 
     expect(res.status()).toBe(404);
     expect(((await res.json()) as ErroApi).error).toBe(MENSAGENS.nadaEncontrado);
   });
 
-  test('CT-EXT-02.8 · [achado] id inválido deveria retornar 400', async ({ rickApi }) => {
+  test('CT-EXT-02.8 · [achado] id inválido deveria retornar 400', async ({ rickApi, vitrine }) => {
     // Achado nosso na API pública: "abc" não é um id, ou seja, é erro de quem chama (4xx).
     // A API responde 500 (erro do servidor). test.fail documenta: hoje falha como esperado.
     test.fail(true, 'A Rick and Morty API responde 500 para id que não é número; o correto seria 400');
     const res = await rickApi.personagem(ID_INVALIDO);
-    await log('CT-EXT-02.8 · personagem "abc"', res);
+    await vitrine.mostrar('CT-EXT-02.8 · personagem "abc"', res, { esperado: 400 });
 
     expect(((await res.json()) as ErroApi).error).toBe(MENSAGENS.idObrigatorio);
     expect(res.status(), 'entrada inválida é erro do cliente: 400').toBe(400);

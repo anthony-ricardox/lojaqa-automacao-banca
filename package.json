@@ -12,6 +12,7 @@
     "test:sauce": "playwright test tests/e2e/externo-e2e.spec.ts --headed",
     "test:rm": "playwright test --project=rick-and-morty",
     "test:rm:ui": "playwright test --project=rick-and-morty --ui",
+    "test:rm:vitrine": "playwright test --project=rick-and-morty --headed",
     "test:ext": "playwright test tests/e2e/externo-e2e.spec.ts rick-and-morty --headed",
     "test:ui": "playwright test --ui",
     "report": "playwright show-report",
