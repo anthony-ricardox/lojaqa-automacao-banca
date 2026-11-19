@@ -24,9 +24,12 @@
   .slide {
     width: 1920px; height: 1080px; position: relative; overflow: hidden; break-after: page;
     padding: 84px 112px 96px;
+    /* Brilhos nos cantos com cores OPACAS (já misturadas com o fundo), cada um na sua caixa.
+       Nada de degradê transparente neste arquivo: no PDF ele vira um sombreado que leitores baseados
+       no pdf.js (Firefox, Moodle, VS Code) pintam de rosa. Onde precisa misturar imagem, ver gerar-fundos.mjs. */
     background:
-      radial-gradient(1200px 700px at 100% 0%, rgba(63,208,191,.10), transparent 60%),
-      radial-gradient(900px 600px at 0% 100%, rgba(233,180,76,.06), transparent 60%),
+      radial-gradient(720px 420px at 100% 0%, #0E2528, #091217) right top / 720px 420px no-repeat,
+      radial-gradient(540px 360px at 0% 100%, #161C1A, #091217) left bottom / 540px 360px no-repeat,
       var(--bg);
   }
   .slide:last-child { break-after: auto; }
@@ -68,7 +71,7 @@
   .pessoa small { color: var(--muted); font-size: 18px; }
   .palco { position: relative; }
   .cartao { position: absolute; top: 70px; left: 10px; width: 600px; height: 378px; border-radius: 30px; padding: 40px 44px; transform: rotate(-6deg);
-    background: radial-gradient(130% 150% at 100% 0%, #2C8F87 0%, transparent 55%), linear-gradient(135deg, #0E1B24, #16424A);
+    background: url(img/cartao.jpg) center / 100% 100% no-repeat, #0E1B24; /* brilho verde no canto: gerado por gerar-fundos.mjs */
     box-shadow: 0 50px 90px -40px rgba(0,0,0,.8), inset 0 0 0 1px rgba(255,255,255,.06); display: flex; flex-direction: column; justify-content: space-between; color: #EAF4F2; }
   .cartao .linha { display: flex; justify-content: space-between; align-items: center; }
   .chip { width: 70px; height: 52px; border-radius: 10px; background: linear-gradient(135deg, #E9C46A, #B88A2A); position: relative; }
@@ -76,9 +79,9 @@
   .marca { font-family: var(--display); font-weight: 800; font-size: 28px; letter-spacing: .04em; }
   .numero { font-family: var(--mono); font-size: 34px; letter-spacing: .1em; white-space: nowrap; }
   .titular { font-family: var(--mono); font-size: 18px; letter-spacing: .14em; opacity: .85; }
-  .recibo { position: absolute; top: 500px; right: -10px; width: 400px; background: #F4F7F6; color: #0E1B24; border-radius: 12px 12px 0 0; padding: 30px 30px 44px; transform: rotate(4deg); font-family: var(--mono); font-size: 21px;
-    -webkit-mask: radial-gradient(circle 11px at 50% 100%, transparent 98%, #000) bottom/26px 100% repeat-x; mask: radial-gradient(circle 11px at 50% 100%, transparent 98%, #000) bottom/26px 100% repeat-x;
-    box-shadow: 0 40px 70px -30px rgba(0,0,0,.7); }
+  /* Borda picotada do recibo: meias bolinhas da cor do fundo do slide (opacas, sem máscara). */
+  .recibo { position: absolute; top: 500px; right: -10px; width: 400px; color: #0E1B24; border-radius: 12px 12px 0 0; padding: 30px 30px 44px; transform: rotate(4deg); font-family: var(--mono); font-size: 21px;
+    background: radial-gradient(circle 11px at 50% 100%, #091217 98%, #F4F7F6 100%) bottom / 26px 100% repeat-x, #F4F7F6; }
   .recibo .t { font-weight: 700; letter-spacing: .12em; margin-bottom: 14px; }
   .recibo .l { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px dashed #B9C6C4; }
   .recibo .l.off { color: #0E8478; }
@@ -149,15 +152,11 @@
   /* ---------- 5. AO VIVO: Loja QA (esquerda) · SauceDemo e Rick and Morty (direita) ---------- */
   .slide.vivo2 { padding: 0; display: grid; grid-template-columns: 1fr 1fr; }
   .lado { position: relative; overflow: hidden; height: 1080px; }
+  /* Fundos já com o escurecimento "assado" na imagem (gerar-fundos.mjs): o topo mostra o sistema real
+     e escurece só onde o texto começa. Imagem opaca = aparece igual em qualquer leitor de PDF. */
   .lado .fundo { position: absolute; inset: 0; }
-  /* Véu escuro: o topo fica limpo (dá para ver o sistema real) e escurece só onde o texto começa. */
-  .lado .fundo::after { content: ""; position: absolute; inset: 0;
-    background: linear-gradient(180deg, rgba(9,18,23,0) 0%, rgba(9,18,23,.04) 20%, rgba(9,18,23,.80) 28%, rgba(9,18,23,.95) 35%, #091217 42%); }
-  .loja .fundo { background: url(img/loja-vitrine.png) 0 0 / 960px auto no-repeat, #F3F1EC; }
-  .rm .fundo { display: grid; grid-template-columns: 480px 480px; background: #0B1A12; }
-  .rm .sauce { background: url(img/saucedemo.png) 0 0 / 480px auto no-repeat, #fff; border-right: 2px solid #2C4450; }
-  .rm .personagens { display: grid; grid-template-columns: repeat(3, 160px); grid-auto-rows: 160px; align-content: start; }
-  .rm .personagens img { width: 160px; height: 160px; object-fit: cover; display: block; }
+  .loja .fundo { background: url(img/fundo-loja.jpg) 0 0 / 960px auto no-repeat, #091217; }
+  .rm .fundo { background: url(img/fundo-mercado.jpg) 0 0 / 960px auto no-repeat, #091217; }
   .rm { border-left: 2px solid #2C4450; }
   .conteudo { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; gap: 14px; padding: 0 60px 84px; }
   .rotulo { align-self: flex-start; font-family: var(--mono); font-size: 16px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink); background: rgba(9,18,23,.88); border: 1px solid var(--line2); border-radius: 999px; padding: 7px 16px; }
@@ -541,17 +540,10 @@
     </div>
   </div>
 
-  <!-- Direita: desafio de mercado. Fundo = SauceDemo logado (a mochila do CT-EXT-01) e os personagens de GET /character, servidos pela própria API. -->
+  <!-- Direita: desafio de mercado. Fundo = SauceDemo logado (a mochila do CT-EXT-01) e os personagens de GET /character,
+       servidos pela própria API (montado por gerar-fundos.mjs a partir de img/saucedemo.png e img/rick-and-morty/). -->
   <div class="lado rm">
-    <div class="fundo">
-      <div class="sauce"></div>
-      <div class="personagens">
-        <img src="img/rick-and-morty/1.jpeg" alt=""><img src="img/rick-and-morty/2.jpeg" alt=""><img src="img/rick-and-morty/3.jpeg" alt="">
-        <img src="img/rick-and-morty/4.jpeg" alt=""><img src="img/rick-and-morty/5.jpeg" alt=""><img src="img/rick-and-morty/6.jpeg" alt="">
-        <img src="img/rick-and-morty/7.jpeg" alt=""><img src="img/rick-and-morty/8.jpeg" alt=""><img src="img/rick-and-morty/9.jpeg" alt="">
-        <img src="img/rick-and-morty/10.jpeg" alt=""><img src="img/rick-and-morty/11.jpeg" alt=""><img src="img/rick-and-morty/12.jpeg" alt="">
-      </div>
-    </div>
+    <div class="fundo"></div>
     <div class="conteudo">
       <div class="rotulo">Demos 3 e 4 · desafio de mercado</div>
       <div class="nome">SauceDemo <i>+</i> <span>Rick and Morty</span></div>
