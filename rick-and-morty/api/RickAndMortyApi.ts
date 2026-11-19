@@ -22,6 +22,9 @@ export type Personagem = {
 
 export type Episodio = { id: number; name: string; air_date: string; episode: string; characters: string[]; url: string };
 
+// Local (planeta, estação...): "residents" traz os LINKS dos personagens que moram lá
+export type Local = { id: number; name: string; type: string; dimension: string; residents: string[]; url: string; created: string };
+
 // Listas vêm paginadas: "info" diz quantos existem e onde estão as páginas vizinhas
 export type Pagina<T> = {
   info: { count: number; pages: number; next: string | null; prev: string | null };
@@ -51,6 +54,11 @@ export class RickAndMortyApi {
     // Remove filtros vazios para não mandar "name=undefined" na URL
     const params = Object.fromEntries(Object.entries(filtros).filter(([, valor]) => valor !== undefined));
     return this.request.get('character/', { params: params as Record<string, string | number> });
+  }
+
+  /** GET /location/{id}: um local e os links dos seus moradores */
+  local(id: number): Promise<APIResponse> {
+    return this.request.get(`location/${id}`);
   }
 
   /** Segue uma URL que a própria API devolveu (ex.: o link do 1º episódio de um personagem) */

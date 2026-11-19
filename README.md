@@ -85,7 +85,8 @@ Depois de copiar, abra o `.env` e troque `coloque-a-senha-aqui` pela senha do cl
 | `npm run test:api:ui` | API no UI Mode: cada requisição e resposta na aba de rede |
 | `npm run test:sauce` | CT-EXT-01 (SauceDemo) com o navegador aberto |
 | `npm run test:rm` | Rick and Morty API (8 casos) |
-| `npm run test:rm:ui` | Rick and Morty no UI Mode |
+| `npm run test:rm:ui` | Rick and Morty no UI Mode, com a **vitrine**: fotos, status e JSON de cada resposta na tela |
+| `npm run test:rm:vitrine` | Rick and Morty numa janela aberta: os cards das respostas vão aparecendo um a um, e a janela fica parada para análise até você fechar |
 | `npm run test:ext` | Os dois desafios de mercado juntos |
 | `npm run test:ui` | UI Mode com **todos** os testes |
 | `npm run report` | Abre o relatório HTML da última execução |
@@ -99,7 +100,7 @@ Depois de copiar, abra o `.env` e troque `coloque-a-senha-aqui` pela senha do cl
 | **UI Mode** (`--ui`) | Janela com a lista de testes, linha do tempo e o "antes e depois" de cada ação | **Explicar** o que aconteceu: volte a qualquer passo, veja o DOM e as requisições. É o melhor para os testes de **API** |
 | **Debug** (`--debug`) | Abre o Playwright Inspector e **pausa antes de cada ação** | **Investigar** um erro, passo a passo. Evite na apresentação: depende de clicar em cada passo |
 
-**Recomendação para a banca:** rodar ao vivo com `npm run test:e2e` (`SLOWMO=400`), e usar `npm run test:api:ui` e `npm run test:rm:ui` para explicar as APIs. Tenha o `npm run report` aberto como plano B.
+**Recomendação para a banca:** rodar ao vivo com `npm run test:e2e` (`SLOWMO=400`), usar `npm run test:api:ui` para explicar a API da Loja e `npm run test:rm:vitrine` para mostrar as respostas do Rick and Morty com foto, status e JSON. Tenha o `npm run report` aberto como plano B (e o `npm run test:rm:ui` se a janela da vitrine não abrir).
 
 ### Variáveis do `.env`
 
@@ -111,6 +112,7 @@ Depois de copiar, abra o `.env` e troque `coloque-a-senha-aqui` pela senha do cl
 | `RICK_MORTY_URL` | API pública do desafio (opcional) |
 | `SLOWMO` | Atraso entre as ações do robô, em ms (400 na banca) |
 | `EVIDENCIA` | `1` grava vídeo, print e trace de todos os testes |
+| `VITRINE` | `1` (padrão) mostra as respostas da Rick and Morty API numa tela; `0` roda só API, sem navegador |
 
 ---
 

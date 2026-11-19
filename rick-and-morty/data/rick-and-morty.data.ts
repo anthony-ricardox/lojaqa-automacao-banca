@@ -27,6 +27,9 @@ export const PAGINA_2 = { numero: 2, primeiroId: 21, ultimoId: 40 };
 // O primeiro episódio da série
 export const PILOTO = { name: 'Pilot', episode: 'S01E01', air_date: 'December 2, 2013' };
 
+// Local 1: a Terra de origem do Rick (conferido na API real em 18/11/2026: 27 moradores)
+export const TERRA_C137 = { id: 1, name: 'Earth (C-137)', type: 'Planet', dimension: 'Dimension C-137' } as const;
+
 // Cenários negativos
 export const ID_INEXISTENTE = 999999;
 export const NOME_INEXISTENTE = 'zzzzzz';

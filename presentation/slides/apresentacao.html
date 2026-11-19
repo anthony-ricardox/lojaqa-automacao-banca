@@ -24,9 +24,12 @@
   .slide {
     width: 1920px; height: 1080px; position: relative; overflow: hidden; break-after: page;
     padding: 84px 112px 96px;
+    /* Brilhos nos cantos com cores OPACAS (já misturadas com o fundo), cada um na sua caixa.
+       Nada de degradê transparente neste arquivo: no PDF ele vira um sombreado que leitores baseados
+       no pdf.js (Firefox, Moodle, VS Code) pintam de rosa. Onde precisa misturar imagem, ver gerar-fundos.mjs. */
     background:
-      radial-gradient(1200px 700px at 100% 0%, rgba(63,208,191,.10), transparent 60%),
-      radial-gradient(900px 600px at 0% 100%, rgba(233,180,76,.06), transparent 60%),
+      radial-gradient(720px 420px at 100% 0%, #0E2528, #091217) right top / 720px 420px no-repeat,
+      radial-gradient(540px 360px at 0% 100%, #161C1A, #091217) left bottom / 540px 360px no-repeat,
       var(--bg);
   }
   .slide:last-child { break-after: auto; }
@@ -68,7 +71,7 @@
   .pessoa small { color: var(--muted); font-size: 18px; }
   .palco { position: relative; }
   .cartao { position: absolute; top: 70px; left: 10px; width: 600px; height: 378px; border-radius: 30px; padding: 40px 44px; transform: rotate(-6deg);
-    background: radial-gradient(130% 150% at 100% 0%, #2C8F87 0%, transparent 55%), linear-gradient(135deg, #0E1B24, #16424A);
+    background: url(img/cartao.jpg) center / 100% 100% no-repeat, #0E1B24; /* brilho verde no canto: gerado por gerar-fundos.mjs */
     box-shadow: 0 50px 90px -40px rgba(0,0,0,.8), inset 0 0 0 1px rgba(255,255,255,.06); display: flex; flex-direction: column; justify-content: space-between; color: #EAF4F2; }
   .cartao .linha { display: flex; justify-content: space-between; align-items: center; }
   .chip { width: 70px; height: 52px; border-radius: 10px; background: linear-gradient(135deg, #E9C46A, #B88A2A); position: relative; }
@@ -76,9 +79,9 @@
   .marca { font-family: var(--display); font-weight: 800; font-size: 28px; letter-spacing: .04em; }
   .numero { font-family: var(--mono); font-size: 34px; letter-spacing: .1em; white-space: nowrap; }
   .titular { font-family: var(--mono); font-size: 18px; letter-spacing: .14em; opacity: .85; }
-  .recibo { position: absolute; top: 500px; right: -10px; width: 400px; background: #F4F7F6; color: #0E1B24; border-radius: 12px 12px 0 0; padding: 30px 30px 44px; transform: rotate(4deg); font-family: var(--mono); font-size: 21px;
-    -webkit-mask: radial-gradient(circle 11px at 50% 100%, transparent 98%, #000) bottom/26px 100% repeat-x; mask: radial-gradient(circle 11px at 50% 100%, transparent 98%, #000) bottom/26px 100% repeat-x;
-    box-shadow: 0 40px 70px -30px rgba(0,0,0,.7); }
+  /* Borda picotada do recibo: meias bolinhas da cor do fundo do slide (opacas, sem máscara). */
+  .recibo { position: absolute; top: 500px; right: -10px; width: 400px; color: #0E1B24; border-radius: 12px 12px 0 0; padding: 30px 30px 44px; transform: rotate(4deg); font-family: var(--mono); font-size: 21px;
+    background: radial-gradient(circle 11px at 50% 100%, #091217 98%, #F4F7F6 100%) bottom / 26px 100% repeat-x, #F4F7F6; }
   .recibo .t { font-weight: 700; letter-spacing: .12em; margin-bottom: 14px; }
   .recibo .l { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px dashed #B9C6C4; }
   .recibo .l.off { color: #0E8478; }
@@ -122,16 +125,39 @@
   .relat img { width: 1500px; max-width: none; margin: -6px 0 0 -684px; display: block; }
   .legend-img { font-family: var(--mono); font-size: 15px; color: var(--dim); margin-top: 10px; }
 
-  /* ---------- 4. ARQUITETURA ---------- */
-  .arq { display: grid; grid-template-columns: 1.25fr .75fr; gap: 48px; margin-top: 40px; }
-  .frase { font-size: 26px; color: var(--muted); line-height: 1.45; border-left: 4px solid var(--accent); padding: 4px 0 4px 22px; margin-top: 26px; }
+  /* ---------- 4. ARQUITETURA COMPLETA (mapa em 4 colunas + faixa do que sai) ---------- */
+  .mapa { display: grid; grid-template-columns: 216px 34px 340px 34px 1fr 34px 300px; margin-top: 30px; }
+  .mapa .seta, .saida .seta { display: grid; place-items: center; font-size: 30px; color: var(--dim); }
+  .pilar { display: flex; flex-direction: column; gap: 10px; }
+  .ctit, .stit { font-family: var(--mono); font-size: 15px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .ctit b, .stit b { color: var(--accent); }
+  .mapa .bx, .saida .bx { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 16px; }
+  .mapa .bx > b, .saida .bx > b { display: block; font-family: var(--mono); font-size: 19px; font-weight: 600; color: var(--ink); }
+  .mapa .bx > span, .saida .bx > span { display: block; font-size: 17px; color: var(--muted); line-height: 1.35; margin-top: 4px; }
+  .mapa .bx > span.cmds { font-family: var(--mono); font-size: 16px; line-height: 1.6; color: var(--ink); margin-top: 8px; }
+  .mapa .bx i { font-style: normal; color: var(--dim); }
+  .mapa .pilar > .bx:last-child { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .mapa .bx.cfg { border-color: var(--accent); }
+  .mapa dl { display: grid; grid-template-columns: auto 1fr; gap: 10px 14px; margin-top: 12px; align-items: baseline; }
+  .mapa dt { font-family: var(--mono); font-size: 16px; color: var(--ink); white-space: nowrap; }
+  .mapa dt.dentro { padding-left: 18px; color: var(--muted); }
+  .mapa dd { font-size: 16px; color: var(--muted); line-height: 1.3; }
+  .dupla { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; flex: 1; }
+  /* Os dois grupos de código espalham as linhas por igual na altura da coluna */
+  .mapa .grupo { display: flex; flex-direction: column; }
+  .mapa .grupo dl { flex: 1; row-gap: 0; align-content: space-evenly; }
+  .mapa .grupo.loja { border-left: 3px solid #F2A196; }
+  .mapa .grupo.mercado { border-left: 3px solid #97CE4C; }
+  .mapa .sis { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .mapa .sis > b { font-family: var(--body); font-size: 20px; }
+  .saida { margin-top: 24px; }
+  .fluxo { display: grid; grid-template-columns: 1fr 1fr 1fr 34px 1fr 34px 1.25fr 34px 1fr; column-gap: 10px; margin-top: 10px; }
+  .saida .bx { border-top: 3px solid var(--gold); }
+  .regras { display: flex; justify-content: space-between; gap: 24px; margin-top: 24px; }
+  .regra { display: flex; gap: 12px; align-items: baseline; font-size: 21px; }
+  .regra b { font-family: var(--mono); color: var(--accent); font-size: 20px; }
+  .frase { font-size: 24px; color: var(--muted); line-height: 1.45; border-left: 4px solid var(--accent); padding: 4px 0 4px 22px; margin-top: 26px; }
   .frase b { color: var(--ink); }
-  .arvore { padding: 28px 32px; font-family: var(--mono); font-size: 19px; line-height: 1.75; white-space: pre; color: var(--muted); }
-  .arvore b { color: var(--ink); font-weight: 600; }
-  .arvore .c { color: var(--dim); }
-  .regras { display: flex; flex-direction: column; gap: 14px; margin-top: 22px; }
-  .regra { display: flex; gap: 14px; align-items: baseline; font-size: 22px; }
-  .regra b { font-family: var(--mono); color: var(--accent); font-size: 20px; min-width: 34px; }
 
   /* ---------- GRÁFICOS (comuns) ---------- */
   .gtit { font-family: var(--mono); font-size: 15px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
@@ -146,28 +172,27 @@
   /* ---------- 3. pirâmide ---------- */
   .piram { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); }
 
-  /* ---------- 5. AO VIVO: Loja QA (esquerda) e Rick and Morty (direita) ---------- */
+  /* ---------- 5. AO VIVO: Loja QA (esquerda) · SauceDemo e Rick and Morty (direita) ---------- */
   .slide.vivo2 { padding: 0; display: grid; grid-template-columns: 1fr 1fr; }
   .lado { position: relative; overflow: hidden; height: 1080px; }
+  /* Fundos já com o escurecimento "assado" na imagem (gerar-fundos.mjs): o topo mostra o sistema real
+     e escurece só onde o texto começa. Imagem opaca = aparece igual em qualquer leitor de PDF. */
   .lado .fundo { position: absolute; inset: 0; }
-  .lado .fundo::after { content: ""; position: absolute; inset: 0; }
-  .loja .fundo { background: url(img/loja-vitrine.png) 0 0 / 960px auto no-repeat, #F3F1EC; }
-  .loja .fundo::after { background: linear-gradient(180deg, rgba(9,18,23,.06) 0%, rgba(9,18,23,.22) 13%, rgba(9,18,23,.84) 26%, rgba(9,18,23,.97) 34%, #091217 40%); }
-  .rm .fundo { display: grid; grid-template-columns: repeat(6, 160px); grid-auto-rows: 160px; background: #0B1A12; }
-  .rm .fundo img { width: 160px; height: 160px; object-fit: cover; display: block; }
-  .rm .fundo::after { background:
-      radial-gradient(520px 260px at 50% 12%, rgba(151,206,76,.26), transparent 70%),
-      linear-gradient(180deg, rgba(9,18,23,.06) 0%, rgba(9,18,23,.22) 13%, rgba(9,18,23,.84) 26%, rgba(9,18,23,.97) 34%, #091217 40%); }
+  .loja .fundo { background: url(img/fundo-loja.jpg) 0 0 / 960px auto no-repeat, #091217; }
+  .rm .fundo { background: url(img/fundo-mercado.jpg) 0 0 / 960px auto no-repeat, #091217; }
   .rm { border-left: 2px solid #2C4450; }
   .conteudo { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; gap: 14px; padding: 0 60px 84px; }
   .rotulo { align-self: flex-start; font-family: var(--mono); font-size: 16px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink); background: rgba(9,18,23,.88); border: 1px solid var(--line2); border-radius: 999px; padding: 7px 16px; }
   .nome { font-family: var(--display); font-weight: 800; font-size: 64px; letter-spacing: -.02em; line-height: 1; margin: 4px 0 8px; }
-  .loja .nome span { color: #FF7A6E; }
+  .loja .nome span { color: #F2A196; }
+  .rm .nome { font-size: 44px; line-height: 64px; white-space: nowrap; }
   .rm .nome span { color: #97CE4C; }
+  .rm .nome i { font-style: normal; color: var(--dim); }
   .demo { display: grid; grid-template-columns: 58px 1fr auto; gap: 20px; align-items: center; background: rgba(14,28,36,.94); border: 1px solid var(--line2); border-radius: 18px; padding: 16px 22px; }
-  .demo .num { width: 58px; height: 58px; border-radius: 15px; display: grid; place-items: center; font-family: var(--display); font-size: 28px; font-weight: 800; color: var(--bg); }
-  .loja .demo .num { background: #FF7A6E; }
-  .rm .demo .num { background: #97CE4C; }
+  /* Número da demo: só um tom de fundo e o número colorido (antes era um bloco de cor sólida). */
+  .demo .num { width: 58px; height: 58px; border-radius: 15px; display: grid; place-items: center; font-family: var(--display); font-size: 28px; font-weight: 800; }
+  .loja .demo .num { background: rgba(255,122,110,.12); color: #F2A196; box-shadow: inset 0 0 0 1.5px rgba(242,161,150,.45); }
+  .rm .demo .num { background: rgba(151,206,76,.12); color: #B2DB7A; box-shadow: inset 0 0 0 1.5px rgba(151,206,76,.45); }
   .demo .quem { font-family: var(--mono); font-size: 15px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
   .demo .cmd { font-family: var(--mono); font-size: 27px; font-weight: 600; color: var(--ink); margin: 4px 0 6px; }
   .demo .cmd::before { content: "$ "; color: var(--dim); font-weight: 400; }
@@ -431,59 +456,92 @@
 
 <!-- ================= 4 · ARQUITETURA ================= -->
 <section class="slide">
-  <div class="top"><div class="eyebrow">Arquitetura</div><div class="who">Quem fala: <b>Anthony</b></div></div>
+  <div class="top"><div class="eyebrow">Arquitetura completa · do comando à evidência</div><div class="who">Quem fala: <b>Anthony</b></div></div>
   <h2>Cada camada faz <em>uma coisa só</em>.</h2>
-  <div class="arq">
-    <div>
-      <!-- Diagrama: cadeia do nosso código (esquerda) e os sistemas reais (direita) -->
-      <svg width="1000" height="600" viewBox="0 0 1000 600" role="img" aria-label="Fluxo: comando, config, setup, fixture, Page Object e spec, ligados à API, à Loja QA e ao ViaCEP">
-        <defs><marker id="seta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#6B8188"/></marker></defs>
-        <rect x="0" y="0" width="560" height="600" rx="18" fill="#0E1C24" stroke="#22343D"/>
-        <text x="28" y="40" font-family="JetBrains Mono" font-size="16" fill="#93A6AC" letter-spacing="2">NOSSO CÓDIGO</text>
-        <rect x="660" y="150" width="340" height="450" rx="18" fill="#0E1C24" stroke="#22343D"/>
-        <text x="688" y="190" font-family="JetBrains Mono" font-size="16" fill="#93A6AC" letter-spacing="2">SISTEMAS REAIS</text>
-        <g fill="none" stroke="#6B8188" stroke-width="1.6">
-          <path d="M280 124V142" marker-end="url(#seta)"/><path d="M280 206V224" marker-end="url(#seta)"/><path d="M280 288V306" marker-end="url(#seta)"/>
-          <path d="M280 370V388" marker-end="url(#seta)"/><path d="M280 452V470" marker-end="url(#seta)"/>
-          <path d="M532 256H688" marker-end="url(#seta)"/><path d="M532 420H688" marker-end="url(#seta)"/>
-          <path d="M830 388V300" marker-end="url(#seta)"/><path d="M830 452V488" marker-end="url(#seta)"/>
-        </g>
-        <g font-family="Instrument Sans">
-          <g><rect x="28" y="62" width="504" height="62" rx="12" fill="#13262F" stroke="#2C4450"/><text x="48" y="90" font-size="21" font-weight="600" fill="#E3ECEA">1 · npm run test:e2e</text><text x="48" y="113" font-size="17" fill="#93A6AC">você roda o comando</text></g>
-          <g><rect x="28" y="144" width="504" height="62" rx="12" fill="#13262F" stroke="#2C4450"/><text x="48" y="172" font-size="21" font-weight="600" fill="#E3ECEA">2 · playwright.config.ts</text><text x="48" y="195" font-size="17" fill="#93A6AC">lê o .env; roda o setup antes de e2e e api</text></g>
-          <g><rect x="28" y="226" width="504" height="62" rx="12" fill="#13262F" stroke="#2C4450"/><text x="48" y="254" font-size="21" font-weight="600" fill="#E3ECEA">3 · tests/setup/auth.setup.ts</text><text x="48" y="277" font-size="17" fill="#93A6AC">login 1x pela API; token guardado por 1 h</text></g>
-          <g><rect x="28" y="308" width="504" height="62" rx="12" fill="#13262F" stroke="#2C4450"/><text x="48" y="336" font-size="21" font-weight="600" fill="#E3ECEA">4 · fixtures/auth.fixture.ts</text><text x="48" y="359" font-size="17" fill="#93A6AC">token no navegador: a loja já abre logada</text></g>
-          <g><rect x="28" y="390" width="504" height="62" rx="12" fill="rgba(63,208,191,.12)" stroke="#3FD0BF" stroke-width="2"/><text x="48" y="418" font-size="21" font-weight="600" fill="#E3ECEA">5 · pages/CheckoutPage.ts</text><text x="48" y="441" font-size="17" fill="#93A6AC">COMO mexer na tela · nenhum expect</text></g>
-          <g><rect x="28" y="472" width="504" height="62" rx="12" fill="#13262F" stroke="#2C4450"/><text x="48" y="500" font-size="21" font-weight="600" fill="#E3ECEA">6 · lojaqa-modulo-6.spec.ts</text><text x="48" y="523" font-size="17" fill="#93A6AC">O QUE testar · expect decide</text></g>
-          <g><rect x="688" y="226" width="284" height="74" rx="12" fill="#13262F" stroke="#2C4450"/><text x="708" y="256" font-size="21" font-weight="600" fill="#E3ECEA">API · Render</text><text x="708" y="282" font-size="16" fill="#93A6AC">/login · /orders · /products</text></g>
-          <g><rect x="688" y="388" width="284" height="64" rx="12" fill="#13262F" stroke="#2C4450"/><text x="708" y="416" font-size="21" font-weight="600" fill="#E3ECEA">Loja QA</text><text x="708" y="440" font-size="16" fill="#93A6AC">vitrine → checkout → painel</text></g>
-          <g><rect x="688" y="490" width="284" height="64" rx="12" fill="#13262F" stroke="#2C4450"/><text x="708" y="518" font-size="21" font-weight="600" fill="#E3ECEA">ViaCEP</text><text x="708" y="542" font-size="16" fill="#93A6AC">CEP vira endereço</text></g>
-          <text x="610" y="246" font-size="16" fill="#93A6AC" text-anchor="middle">login 1x</text>
-          <text x="610" y="410" font-size="16" fill="#93A6AC" text-anchor="middle">dirige a tela</text>
-          <text x="842" y="350" font-size="16" fill="#93A6AC">cria o pedido</text>
-          <text x="842" y="476" font-size="16" fill="#93A6AC">busca CEP</text>
-        </g>
-      </svg>
-      <p class="frase"><b>O spec diz o que testar, o Page Object diz como mexer na tela, a fixture prepara o terreno e o config amarra tudo.</b></p>
+
+  <!-- Mapa em 4 colunas: quem dispara → quem amarra → nosso código → o que testamos de verdade -->
+  <div class="mapa">
+    <div class="pilar">
+      <div class="ctit"><b>1</b> · Você roda</div>
+      <div class="bx"><b>npm run …</b><span class="cmds">test:e2e<br>test:e2e:ui<br>test:api:ui<br>test:sauce<br>test:rm:vitrine<br>report<br>slides</span></div>
+      <div class="bx"><b>.env</b><span>URLs, login, SLOWMO, EVIDENCIA, VITRINE<br><i>fica fora do Git</i></span></div>
     </div>
-    <div>
-      <div class="card arvore"><b>pages/</b>          <span class="c">COMO (sem expect)</span>
-<b>fixtures/</b>       <span class="c">prepara o terreno</span>
-<b>data/</b>           <span class="c">com quais dados</span>
-<b>tests/setup/</b>    <span class="c">login 1x via API</span>
-<b>tests/e2e/</b>      <span class="c">O QUE · tela</span>
-<b>tests/api/</b>      <span class="c">O QUE · API</span>
-<b>rick-and-morty/</b> <span class="c">mesma arquitetura,</span>
-                <span class="c">API Object no lugar</span>
-                <span class="c">do Page Object</span></div>
-      <div class="regras">
-        <div class="regra"><b>0</b><span><code>expect</code> dentro do Page Object</span></div>
-        <div class="regra"><b>0</b><span><code>waitForTimeout</code>: só eventos reais</span></div>
-        <div class="regra"><b>1x</b><span>login por hora (API: 5 a cada 15 min)</span></div>
-        <div class="regra"><b>ID</b><span>CT-xx igual no código, no Jira e aqui</span></div>
+    <div class="seta">→</div>
+
+    <div class="pilar">
+      <div class="ctit"><b>2</b> · O config amarra</div>
+      <div class="bx cfg"><b>playwright.config.ts</b><span>4 projects · 1 teste por vez</span>
+        <dl>
+          <dt>setup</dt><dd>login 1x pela API</dd>
+          <dt>e2e</dt><dd>Chrome, depois do setup</dd>
+          <dt>api</dt><dd>sem navegador, depois do setup</dd>
+          <dt>rick-and-morty</dt><dd>sem login</dd>
+        </dl>
+      </div>
+      <div class="bx"><b>.auth/</b><span>token do login, vale 1 h<br><i>fica fora do Git</i></span></div>
+    </div>
+    <div class="seta">→</div>
+
+    <div class="pilar">
+      <div class="ctit"><b>3</b> · Nosso código</div>
+      <div class="dupla">
+        <div class="bx grupo loja"><b>Loja QA · nosso módulo</b>
+          <dl>
+            <dt>tests/setup/</dt><dd>login 1x via API</dd>
+            <dt>fixtures/</dt><dd>loja já abre logada</dd>
+            <dt>pages/</dt><dd>COMO · sem expect</dd>
+            <dt>data/</dt><dd>com quais dados</dd>
+            <dt>tests/e2e/</dt><dd>O QUE · tela</dd>
+            <dt>tests/api/</dt><dd>O QUE · API</dd>
+          </dl>
+        </div>
+        <div class="bx grupo mercado"><b>Desafio de mercado</b>
+          <dl>
+            <dt>externo-e2e</dt><dd>SauceDemo · tela</dd>
+            <dt>rick-and-morty/</dt><dd>mesma arquitetura</dd>
+            <dt class="dentro">api/</dt><dd>API Object</dd>
+            <dt class="dentro">fixtures/</dt><dd>{ rickApi, vitrine }</dd>
+            <dt class="dentro">vitrine/</dt><dd>mostra cada resposta</dd>
+            <dt class="dentro">tests/</dt><dd>O QUE · expect decide</dd>
+          </dl>
+        </div>
       </div>
     </div>
+    <div class="seta">→</div>
+
+    <div class="pilar">
+      <div class="ctit"><b>4</b> · Sistemas reais</div>
+      <div class="bx sis"><b>Loja QA</b><span>vitrine → checkout → painel</span></div>
+      <div class="bx sis"><b>API · Render</b><span>/login · /orders · /products</span></div>
+      <div class="bx sis"><b>ViaCEP</b><span>CEP vira endereço</span></div>
+      <div class="bx sis"><b>SauceDemo</b><span>loja pública de treino</span></div>
+      <div class="bx sis"><b>Rick and Morty API</b><span>pública, sem token</span></div>
+    </div>
   </div>
+
+  <!-- Faixa de baixo: cada execução vira evidência, e a evidência vira card e documentação -->
+  <div class="saida">
+    <div class="stit"><b>5</b> · O que sai de cada execução</div>
+    <div class="fluxo">
+      <div class="bx"><b>Terminal</b><span>status, JSON, tempo</span></div>
+      <div class="bx"><b>Relatório HTML</b><span>vídeo · trace · print</span></div>
+      <div class="bx"><b>Vitrine</b><span>fotos · status · JSON</span></div>
+      <div class="seta">→</div>
+      <div class="bx"><b>docs/evidencias/</b><span>17 prints e logs</span></div>
+      <div class="seta">→</div>
+      <div class="bx"><b>Jira SCRUM</b><span>31 cards: CT ↔ BUG ↔ evidência</span></div>
+      <div class="seta">→</div>
+      <div class="bx"><b>READMEs · slides</b><span>como rodar · PDF da banca</span></div>
+    </div>
+  </div>
+
+  <div class="regras">
+    <div class="regra"><b>0</b><span><code>expect</code> no Page e no API Object</span></div>
+    <div class="regra"><b>0</b><span><code>waitForTimeout</code>: só eventos reais</span></div>
+    <div class="regra"><b>1x</b><span>login por hora (5 a cada 15 min)</span></div>
+    <div class="regra"><b>ID</b><span>CT-xx igual no código, no Jira e aqui</span></div>
+  </div>
+  <p class="frase"><b>O spec diz o que testar, o Page/API Object diz como, a fixture prepara, o config amarra, e cada execução vira evidência.</b></p>
   <div class="foot"><span>LQA · BANCA 06 · CHECKOUT &amp; PAGAMENTOS</span><span>4 / 7</span></div>
 </section>
 
@@ -538,27 +596,23 @@
     </div>
   </div>
 
-  <!-- Direita: Rick and Morty. Fundo = os 20 personagens da página 1 de GET /character, servidos pela própria API. -->
+  <!-- Direita: desafio de mercado. Fundo = SauceDemo logado (a mochila do CT-EXT-01) e os personagens de GET /character,
+       servidos pela própria API (montado por gerar-fundos.mjs a partir de img/saucedemo.png e img/rick-and-morty/). -->
   <div class="lado rm">
-    <div class="fundo">
-      <img src="img/rick-and-morty/1.jpeg" alt=""><img src="img/rick-and-morty/2.jpeg" alt=""><img src="img/rick-and-morty/3.jpeg" alt=""><img src="img/rick-and-morty/4.jpeg" alt=""><img src="img/rick-and-morty/5.jpeg" alt="">
-      <img src="img/rick-and-morty/6.jpeg" alt=""><img src="img/rick-and-morty/7.jpeg" alt=""><img src="img/rick-and-morty/8.jpeg" alt=""><img src="img/rick-and-morty/9.jpeg" alt=""><img src="img/rick-and-morty/10.jpeg" alt="">
-      <img src="img/rick-and-morty/11.jpeg" alt=""><img src="img/rick-and-morty/12.jpeg" alt=""><img src="img/rick-and-morty/13.jpeg" alt=""><img src="img/rick-and-morty/14.jpeg" alt=""><img src="img/rick-and-morty/15.jpeg" alt="">
-      <img src="img/rick-and-morty/16.jpeg" alt=""><img src="img/rick-and-morty/17.jpeg" alt=""><img src="img/rick-and-morty/18.jpeg" alt=""><img src="img/rick-and-morty/19.jpeg" alt=""><img src="img/rick-and-morty/20.jpeg" alt="">
-    </div>
+    <div class="fundo"></div>
     <div class="conteudo">
       <div class="rotulo">Demos 3 e 4 · desafio de mercado</div>
-      <div class="nome">Rick and Morty <span>API</span></div>
+      <div class="nome">SauceDemo <i>+</i> <span>Rick and Morty</span></div>
       <div class="demo"><div class="num">3</div><div>
         <div class="quem">Rodrigo · SauceDemo · 0:50</div><div class="cmd">npm run test:sauce</div>
         <div class="ve">login → mochila → checkout · total <b>$32.39</b> · <b>Thank you for your order!</b></div></div>
         <div class="modo-chip">na tela</div></div>
       <div class="demo"><div class="num">4</div><div>
-        <div class="quem">Anthony · API pública · 0:55</div><div class="cmd">npm run test:rm:ui</div>
-        <div class="ve"><b>200</b> + contrato · filtros · paginação · encadeia → <b>Pilot</b> · <b>404</b> · achado: <b>500</b></div></div>
-        <div class="modo-chip">UI Mode</div></div>
+        <div class="quem">Anthony · API pública · 0:55</div><div class="cmd">npm run test:rm:vitrine</div>
+        <div class="ve">cada resposta vira card: <b>foto</b>, status e JSON · <b>Pilot</b> · <b>404</b> · achado: <b>500</b></div></div>
+        <div class="modo-chip">vitrine</div></div>
       <div class="grafico">
-        <div class="gcab"><span class="gtit">Tempo de cada caso (ms) · 15/11</span><b>8 casos em 0,8 s</b></div>
+        <div class="gcab"><span class="gtit">Tempo de cada caso (ms) · só a API · 15/11</span><b>8 casos em 0,8 s</b></div>
         <!-- Colunas, série única: 0,5 px por ms. Dados do relatório de 15/11. -->
         <svg width="796" height="178" viewBox="0 0 796 178" role="img" aria-label="Tempo de cada caso do Rick and Morty: de 64 a 173 milissegundos">
           <g stroke="#22343D"><line x1="20" x2="716" y1="32" y2="32" stroke-dasharray="3 5"/><line x1="20" x2="716" y1="82" y2="82" stroke-dasharray="3 5"/><line x1="20" x2="716" y1="132" y2="132"/></g>
@@ -585,7 +639,7 @@
           <g font-family="Instrument Sans" font-size="16" fill="#E3ECEA" text-anchor="middle"><text x="226" y="174">positivos</text><text x="582" y="174">negativos</text></g>
         </svg>
       </div>
-      <div class="credito">Fundo: os 20 personagens de GET /character, imagens da própria API · © Adult Swim</div>
+      <div class="credito">Fundo: SauceDemo logado, com a mochila do teste · personagens de GET /character · © Adult Swim</div>
     </div>
   </div>
 
@@ -709,14 +763,16 @@
     <div style="display:flex;flex-direction:column;gap:22px">
       <div class="card bloco"><h4>Pasta própria, mesma arquitetura</h4><pre><b>rick-and-morty/</b>
 ├─ api/RickAndMortyApi.ts   <span style="color:#6B8188">API Object</span>
-├─ fixtures/                <span style="color:#6B8188">entrega { rickApi }</span>
+├─ fixtures/                <span style="color:#6B8188">entrega { rickApi, vitrine }</span>
+├─ vitrine/Vitrine.ts       <span style="color:#6B8188">tela das respostas</span>
 ├─ data/                    <span style="color:#6B8188">massa de dados</span>
 ├─ tests/                   <span style="color:#6B8188">CT-EXT-02.1 a 02.8</span>
 └─ README.md                <span style="color:#6B8188">documentação</span></pre></div>
-      <div class="card bloco"><h4>O que aparece no console</h4><pre>▶ CT-EXT-02.8 · personagem "abc"
+      <div class="card bloco"><h4>No console e na vitrine</h4><pre>▶ CT-EXT-02.8 · personagem "abc"
   GET …/api/character/abc
   STATUS: <span class="e">500 Internal Server Error</span>
-{ "error": "Hey! you must provide an id" }</pre></div>
+{ "error": "Hey! you must provide an id" }
+<b>vitrine:</b> <span class="e">✗ esperado 400, veio 500</span></pre></div>
     </div>
   </div>
   <div class="foot"><span>LQA · BANCA 06 · ANEXOS</span><span>B</span></div>
@@ -738,20 +794,23 @@
         <tr><td>npm run test:api:ui</td><td class="m">API no UI Mode (aba de rede)</td></tr>
         <tr><td>npm run test:sauce</td><td class="m">SauceDemo na tela</td></tr>
         <tr><td>npm run test:rm</td><td class="m">Rick and Morty no terminal</td></tr>
-        <tr><td>npm run test:rm:ui</td><td class="m">Rick and Morty no UI Mode</td></tr>
+        <tr><td>npm run test:rm:ui</td><td class="m">Rick and Morty no UI Mode, com a vitrine</td></tr>
+        <tr><td>npm run test:rm:vitrine</td><td class="m">Cards com foto, status e JSON; a janela fica aberta</td></tr>
         <tr><td>npm run report</td><td class="m">Relatório HTML com vídeo e trace</td></tr>
       </tbody>
     </table>
     <div style="display:flex;flex-direction:column;gap:22px">
       <div class="card bloco"><h4>Recomendação para a banca</h4><pre><b>Tela:</b> npm run test:e2e com SLOWMO=400
   a plateia vê cada campo sendo preenchido
-<b>API:</b> npm run test:api:ui e test:rm:ui
+<b>API:</b> npm run test:api:ui
   clique no teste e mostre a requisição e a resposta
+<b>Rick and Morty:</b> npm run test:rm:vitrine
+  cards um a um; depois clique no 02.4 e no 02.8
 <b>Evite:</b> --debug ao vivo
   ele espera um clique a cada passo
 <b>Plano B:</b> npm run report já aberto</pre></div>
       <div class="card bloco"><h4>Dia da banca</h4><pre><b>07h30</b> abrir /api/health (acorda o Render)
-<b>07h45</b> npm test uma vez (gera o token)
+<b>07h45</b> npm test uma vez (token + fotos em cache)
 <b>08h15</b> zoom 150%, SLOWMO=400, relatório aberto
 <b>429?</b>  mais de 5 logins: esperar 15 min</pre></div>
     </div>
@@ -771,7 +830,7 @@
       <div class="passo vivo"><span class="t">4:30–7:00</span><span>AO VIVO 1 · npm run test:e2e</span><span class="q">Anthony</span></div>
       <div class="passo vivo"><span class="t">7:00–9:00</span><span>AO VIVO 2 · npm run test:api:ui</span><span class="q">André</span></div>
       <div class="passo vivo"><span class="t">9:00–9:50</span><span>AO VIVO 3 · npm run test:sauce</span><span class="q">Rodrigo</span></div>
-      <div class="passo vivo"><span class="t">9:50–10:45</span><span>AO VIVO 4 · npm run test:rm:ui</span><span class="q">Anthony</span></div>
+      <div class="passo vivo"><span class="t">9:50–10:45</span><span>AO VIVO 4 · npm run test:rm:vitrine</span><span class="q">Anthony</span></div>
       <div class="passo"><span class="t">10:45–11:15</span><span>Slide 6 · defeitos e processo</span><span class="q">Rodrigo</span></div>
       <div class="passo"><span class="t">11:15–12:00</span><span>Slide 7 · uma lição de cada um</span><span class="q">os três</span></div>
     </div>
@@ -783,6 +842,7 @@
         <tr><td style="white-space:normal">O que é test.fail?</td><td class="m">Bug conhecido escrito como teste: falha esperada, avisa quando corrigirem</td></tr>
         <tr><td style="white-space:normal">Como evitam esperas fixas?</td><td class="m">waitForResponse, waitForURL e expect com repetição</td></tr>
         <tr><td style="white-space:normal">Por que 403 é bug?</td><td class="m">Sem credencial é 401; 403 é para quem se identificou sem permissão</td></tr>
+        <tr><td style="white-space:normal">Teste de API abre navegador?</td><td class="m">A vitrine só mostra as respostas; quem decide é o expect. VITRINE=0 desliga</td></tr>
       </tbody>
     </table>
   </div>
