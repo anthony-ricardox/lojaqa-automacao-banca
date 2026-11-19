@@ -77,7 +77,8 @@ const eObjeto = (v: unknown): v is Record<string, unknown> => typeof v === 'obje
 
 // Acha as fotos na resposta, seja qual for o formato que a API devolveu:
 //   personagem → { image }   ·   página → { results: [{ image }] }   ·   vários ids → [{ image }]
-//   episódio → só traz os LINKS dos personagens; a foto de cada um fica em /character/avatar/{id}.jpeg
+//   episódio (characters) e local (residents) → só trazem os LINKS dos personagens;
+//   a foto de cada um fica em /character/avatar/{id}.jpeg
 function fotosDe(corpo: unknown): Foto[] {
   const itens: unknown[] = Array.isArray(corpo)
     ? corpo
@@ -88,8 +89,9 @@ function fotosDe(corpo: unknown): Foto[] {
     .filter(eObjeto)
     .filter((p) => typeof p.image === 'string')
     .map((p) => ({ src: String(p.image), legenda: String(p.name ?? '') }));
-  if (fotos.length > 0 || !eObjeto(corpo) || !Array.isArray(corpo.characters)) return fotos;
-  return corpo.characters.map((link: string) => ({
+  if (fotos.length > 0 || !eObjeto(corpo)) return fotos;
+  const links = Array.isArray(corpo.characters) ? corpo.characters : Array.isArray(corpo.residents) ? corpo.residents : [];
+  return links.map((link: string) => ({
     src: `${link.replace('/character/', '/character/avatar/')}.jpeg`,
     legenda: `#${link.split('/').pop()}`,
   }));

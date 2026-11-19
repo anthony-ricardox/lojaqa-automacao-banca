@@ -4,7 +4,7 @@
 // e mostra um card com as fotos na tela do UI Mode (ou na janela, com --headed). Quem valida é o expect.
 // Rodar: npm run test:rm  ·  npm run test:rm:ui (UI Mode)  ·  npm run test:rm:vitrine (janela ao vivo)
 import { test, expect } from '../fixtures/rick-and-morty.fixture';
-import type { Episodio, ErroApi, Pagina, Personagem } from '../api/RickAndMortyApi';
+import type { Episodio, ErroApi, Local, Pagina, Personagem } from '../api/RickAndMortyApi';
 import {
   FAMILIA_SMITH,
   FILTRO_RICKS_VIVOS,
@@ -16,6 +16,7 @@ import {
   PILOTO,
   RICK,
   TAMANHO_PAGINA,
+  TERRA_C137,
 } from '../data/rick-and-morty.data';
 
 // SCRUM-24 · US-04
@@ -138,4 +139,24 @@ test.describe('CT-EXT-02 · Rick and Morty API', () => {
     expect(((await res.json()) as ErroApi).error).toBe(MENSAGENS.idObrigatorio);
     expect(res.status(), 'entrada inválida é erro do cliente: 400').toBe(400);
   });
+
+  // ===== DEMO AO VIVO: prova de que a vitrine é em tempo real =====
+  // Na banca: selecione as linhas abaixo, descomente (Ctrl+K Ctrl+U), salve e rode
+  //   npx playwright test --project=rick-and-morty -g "02.9" --headed
+  // Um card novo aparece com os moradores da Terra (C-137), vindos da API naquele instante.
+  // Depois, comente de novo (Ctrl+K Ctrl+C): fora da demo a suíte continua com 8 casos.
+  //
+  // test('CT-EXT-02.9 · local: a Terra (C-137) e os seus moradores', async ({ rickApi, vitrine }) => {
+  //   const res = await rickApi.local(TERRA_C137.id);
+  //   const local: Local = await res.json();
+  //   await vitrine.mostrar('CT-EXT-02.9 · local 1', res, { esperado: 200 });
+  //
+  //   expect(res.status()).toBe(200);
+  //   expect(local).toMatchObject(TERRA_C137);
+  //   expect(local.residents.length).toBeGreaterThan(0);
+  //   // Cada morador é um link para um personagem (é dele que a vitrine tira as fotos)
+  //   for (const link of local.residents) {
+  //     expect.soft(link).toMatch(/\/api\/character\/\d+$/);
+  //   }
+  //. });
 });
